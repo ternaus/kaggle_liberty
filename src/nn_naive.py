@@ -158,13 +158,19 @@ net1 = NeuralNet(
 
     # optimization method:
     update=nesterov_momentum,
-    update_learning_rate=0.001,
-    update_momentum=0.9,
+    # update_learning_rate=0.001,
+    # update_momentum=0.9,
+    update_momentum=theano.shared(float32(0.9)),
     eval_size=0.2,
     max_epochs=200,  # we want to train this many epochs
+    update_learning_rate=theano.shared(float32(0.03)),
     verbose=1,
     regression=True,  # flag to indicate we're dealing with regression problem
-
+    on_epoch_finished=[
+                    AdaptiveVariable('update_learning_rate', start=0.001, stop=0.00001),
+                    AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                    EarlyStopping(),
+                ]
     )
 
 print X_train.shape
