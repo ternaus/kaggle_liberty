@@ -3,6 +3,8 @@ from __future__ import division
 import pandas as pd
 from pylab import *
 import time
+from lasagne import layers
+
 
 from sklearn.cross_validation import train_test_split
 
@@ -196,9 +198,6 @@ elif ind == 2:
   y_std = y_train.std()
 
   X_test = scaler.transform(X_test).astype(np.float32)
-
-
-  from lasagne import layers
 
 
   print X_train.shape
