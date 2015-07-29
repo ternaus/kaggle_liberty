@@ -39,7 +39,6 @@ from pylab import *
 import seaborn as sns
 import pandas as pd
 import os
-import xgboost as xgb
 import numpy as np
 import math
 
@@ -126,6 +125,14 @@ X_train, X_test, y_train, y_test = train_test_split(train[features], train['Haza
 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train).astype(np.float32)
+
+y_train = y_train.values
+y_train.shape = (y_train.shape[0], 1)
+
+y_test = y_test.values
+y_test.shape = (y_test.shape[0], 1)
+
+
 y_mean = y_train.mean()
 y_std = y_train.std()
 
@@ -151,7 +158,7 @@ net1 = NeuralNet(
 
     # optimization method:
     update=nesterov_momentum,
-    update_learning_rate=0.0001,
+    update_learning_rate=0.001,
     update_momentum=0.9,
     eval_size=0.2,
     max_epochs=200,  # we want to train this many epochs
@@ -161,13 +168,16 @@ net1 = NeuralNet(
     )
 
 print X_train.shape
-target = (y_train.values - y_mean) / y_std
-
+target = (y_train - y_mean) / y_std
+# scaler1 = StandardScaler()
+# target = scaler1.fit_transform(y_train.values)
 
 net1.fit(X_train.astype(np.float32), target.astype(np.float32))
 
-
+target_test = (y_test - y_mean) / y_std
 prediction = net1.predict(X_test)
+
+print normalized_gini(target_test, prediction)
 
 # train = gl.SFrame('../data/train.csv')
 #
