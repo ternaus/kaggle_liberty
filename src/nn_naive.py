@@ -136,7 +136,7 @@ y_test.shape = (y_test.shape[0], 1)
 y_mean = y_train.mean()
 y_std = y_train.std()
 
-X_test = scaler.transform(X_test)
+X_test = scaler.transform(X_test).astype(np.float32)
 
 
 from lasagne import layers
