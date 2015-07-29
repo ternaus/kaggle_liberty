@@ -120,8 +120,6 @@ features = [
 
 random_state = 42
 
-scaler = StandardScaler()
-
 net1 = NeuralNet(
       layers=[  # three layers: one hidden layer
           ('input', layers.InputLayer),
@@ -131,9 +129,9 @@ net1 = NeuralNet(
           ('output', layers.DenseLayer),
           ],
       # layer parameters:
-      input_shape=(None, train[features].shape[0]),
+      input_shape=(None, train[features].shape[1]),
       hidden0_num_units=200,  # number of units in hidden layer
-      dropout_p=0.5,
+      dropout_p=0.6,
       hidden1_num_units=200,  # number of units in hidden layer
       output_nonlinearity=None,  # output layer uses identity function
       output_num_units=1,  # 1 target values
@@ -155,23 +153,31 @@ net1 = NeuralNet(
                   ]
       )
 
-ind = 1
+ind = 2
 
+scaler = StandardScaler()
 
 if ind == 1:
   X = scaler.fit_transform(train[features]).astype(np.float32)
   X_test = scaler.transform(test[features]).astype(np.float32)
 
   y = train['Hazard'].values.astype(np.float32)
+
   y.shape = (y.shape[0], 1)
+
   y_mean = y.mean()
+
   y_std = y.std()
-  net1.fit(X, y)
+
+  target = (y - y_mean) / y_std
+  net1.fit(X, target.astype(np.float32))
+
+
   prediction = net1.predict(X_test)
   submission = pd.DataFrame()
   submission['Id'] = test['Id']
   submission['Hazard'] = prediction
-  submission.to_csv('predictions/nn_{timestamp}.csv'.format(timestamp=time.time()))
+  submission.to_csv('predictions/nn_{timestamp}.csv'.format(timestamp=time.time()), index=False)
 
 
 
