@@ -2,6 +2,7 @@ from __future__ import division
 
 import pandas as pd
 from pylab import *
+import time
 
 from sklearn.cross_validation import train_test_split
 
@@ -105,6 +106,7 @@ class AdjustVariable(object):
 joined = pd.read_csv('../data/joined.csv')
 
 train = joined[joined['Hazard'] != -1]
+test = joined[joined['Hazard'] == -1]
 
 print train.shape
 print list(train.columns)
@@ -116,130 +118,156 @@ features = [
 
 random_state = 42
 
-# train['Hazard'] = train['Hazard'].apply(lambda x: math.log(1 + x), 1)
-
-X_train, X_test, y_train, y_test = train_test_split(train[features], train['Hazard'],
-                                                    test_size=0.2,
-                                                    random_state=random_state)
-
-
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train).astype(np.float32)
 
-y_train = y_train.values
-y_train.shape = (y_train.shape[0], 1)
-
-y_test = y_test.values
-y_test.shape = (y_test.shape[0], 1)
-
-
-y_mean = y_train.mean()
-y_std = y_train.std()
-
-X_test = scaler.transform(X_test).astype(np.float32)
-
-
-from lasagne import layers
 net1 = NeuralNet(
-    layers=[  # three layers: one hidden layer
-        ('input', layers.InputLayer),
-        ('hidden0', layers.DenseLayer),
-        ('dropout', DropoutLayer),
-        ('hidden1', layers.DenseLayer),
-        ('output', layers.DenseLayer),
-        ],
-    # layer parameters:
-    input_shape=(None, X_train.shape[1]),
-    hidden0_num_units=200,  # number of units in hidden layer
-    dropout_p=0.5,
-    hidden1_num_units=200,  # number of units in hidden layer
-    output_nonlinearity=None,  # output layer uses identity function
-    output_num_units=1,  # 1 target values
+      layers=[  # three layers: one hidden layer
+          ('input', layers.InputLayer),
+          ('hidden0', layers.DenseLayer),
+          ('dropout', DropoutLayer),
+          ('hidden1', layers.DenseLayer),
+          ('output', layers.DenseLayer),
+          ],
+      # layer parameters:
+      input_shape=(None, train[features].shape[0]),
+      hidden0_num_units=200,  # number of units in hidden layer
+      dropout_p=0.5,
+      hidden1_num_units=200,  # number of units in hidden layer
+      output_nonlinearity=None,  # output layer uses identity function
+      output_num_units=1,  # 1 target values
 
-    # optimization method:
-    update=nesterov_momentum,
-    # update_learning_rate=0.001,
-    # update_momentum=0.9,
-    update_momentum=theano.shared(float32(0.9)),
-    eval_size=0.2,
-    max_epochs=200,  # we want to train this many epochs
-    update_learning_rate=theano.shared(float32(0.03)),
-    verbose=1,
-    regression=True,  # flag to indicate we're dealing with regression problem
-    on_epoch_finished=[
-                    AdaptiveVariable('update_learning_rate', start=0.001, stop=0.00001),
-                    AdjustVariable('update_momentum', start=0.9, stop=0.999),
-                    EarlyStopping(),
-                ]
-    )
+      # optimization method:
+      update=nesterov_momentum,
+      # update_learning_rate=0.001,
+      # update_momentum=0.9,
+      update_momentum=theano.shared(float32(0.9)),
+      eval_size=0.2,
+      max_epochs=200,  # we want to train this many epochs
+      update_learning_rate=theano.shared(float32(0.03)),
+      verbose=1,
+      regression=True,  # flag to indicate we're dealing with regression problem
+      on_epoch_finished=[
+                      AdaptiveVariable('update_learning_rate', start=0.001, stop=0.00001),
+                      AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                      EarlyStopping(),
+                  ]
+      )
 
-print X_train.shape
-target = (y_train - y_mean) / y_std
-# scaler1 = StandardScaler()
-# target = scaler1.fit_transform(y_train.values)
+ind = 1
 
-net1.fit(X_train.astype(np.float32), target.astype(np.float32))
 
-target_test = (y_test - y_mean) / y_std
-prediction = net1.predict(X_test)
+if ind == 1:
+  X = scaler.fit_transform(train[features]).astype(np.float32)
+  X_test = scaler.transform(test[features]).astype(np.float32)
 
-print normalized_gini(target_test, prediction)
+  y = train['Hazard'].values.astype(np.float32)
+  y.shape = (y.shape[0], 1)
+  y_mean = y.mean()
+  y_std = y.std()
+  net1.fit(X, y)
+  prediction = net1.predict(X_test)
+  submission = pd.DataFrame()
+  submission['Id'] = test['Id']
+  submission['Hazard'] = prediction
+  submission.to_csv('predictions/nn_{timestamp}.csv'.format(timestamp=time.time()))
 
-# train = gl.SFrame('../data/train.csv')
-#
-#
-#
-# features = [
-# #     'Id',
-# #  'Hazard',
-#  'T1_V1',
-#  'T1_V2',
-#  'T1_V3',
-#  'T1_V4',
-#  'T1_V5',
-#  'T1_V6',
-#  'T1_V7',
-#  'T1_V8',
-#  'T1_V9',
-#  'T1_V10',
-#  'T1_V11',
-#  'T1_V12',
-#  'T1_V13',
-#  'T1_V14',
-#  'T1_V15',
-#  'T1_V16',
-#  'T1_V17',
-#  'T2_V1',
-#  'T2_V2',
-#  'T2_V3',
-#  'T2_V4',
-#  'T2_V5',
-#  'T2_V6',
-#  'T2_V7',
-#  'T2_V8',
-#  'T2_V9',
-#  'T2_V10',
-#  'T2_V11',
-#  'T2_V12',
-#  'T2_V13',
-#  'T2_V14',
-#  'T2_V15']
-#
-#
-#
-#
-#
-#
-# ind = 1
-# if ind == 1:
-#   sf_train, sf_test = train.random_split(.8, seed=42)
-#   model = gl.boosted_trees_regression.create(sf_train,
-#                                            features=features,
-#                                            target='Hazard',
-#                                            validation_set=sf_test,
-#                                            max_depth=4,
-#                                            max_iterations=600,
-#                                            step_size=0.01)
-#
-#   print normalized_gini(sf_test['Hazard'], model.predict(sf_test))
-#
+
+
+
+elif ind == 2:
+  # train['Hazard'] = train['Hazard'].apply(lambda x: math.log(1 + x), 1)
+
+  X_train, X_test, y_train, y_test = train_test_split(train[features], train['Hazard'],
+                                                      test_size=0.2,
+                                                      random_state=random_state)
+
+
+  scaler = StandardScaler()
+  X_train = scaler.fit_transform(X_train).astype(np.float32)
+
+  y_train = y_train.values
+  y_train.shape = (y_train.shape[0], 1)
+
+  y_test = y_test.values
+  y_test.shape = (y_test.shape[0], 1)
+
+
+  y_mean = y_train.mean()
+  y_std = y_train.std()
+
+  X_test = scaler.transform(X_test).astype(np.float32)
+
+
+  from lasagne import layers
+
+
+  print X_train.shape
+  target = (y_train - y_mean) / y_std
+  # scaler1 = StandardScaler()
+  # target = scaler1.fit_transform(y_train.values)
+
+  net1.fit(X_train.astype(np.float32), target.astype(np.float32))
+
+  target_test = (y_test - y_mean) / y_std
+  prediction = net1.predict(X_test)
+
+  print normalized_gini(target_test, prediction)
+
+  # train = gl.SFrame('../data/train.csv')
+  #
+  #
+  #
+  # features = [
+  # #     'Id',
+  # #  'Hazard',
+  #  'T1_V1',
+  #  'T1_V2',
+  #  'T1_V3',
+  #  'T1_V4',
+  #  'T1_V5',
+  #  'T1_V6',
+  #  'T1_V7',
+  #  'T1_V8',
+  #  'T1_V9',
+  #  'T1_V10',
+  #  'T1_V11',
+  #  'T1_V12',
+  #  'T1_V13',
+  #  'T1_V14',
+  #  'T1_V15',
+  #  'T1_V16',
+  #  'T1_V17',
+  #  'T2_V1',
+  #  'T2_V2',
+  #  'T2_V3',
+  #  'T2_V4',
+  #  'T2_V5',
+  #  'T2_V6',
+  #  'T2_V7',
+  #  'T2_V8',
+  #  'T2_V9',
+  #  'T2_V10',
+  #  'T2_V11',
+  #  'T2_V12',
+  #  'T2_V13',
+  #  'T2_V14',
+  #  'T2_V15']
+  #
+  #
+  #
+  #
+  #
+  #
+  # ind = 1
+  # if ind == 1:
+  #   sf_train, sf_test = train.random_split(.8, seed=42)
+  #   model = gl.boosted_trees_regression.create(sf_train,
+  #                                            features=features,
+  #                                            target='Hazard',
+  #                                            validation_set=sf_test,
+  #                                            max_depth=4,
+  #                                            max_iterations=600,
+  #                                            step_size=0.01)
+  #
+  #   print normalized_gini(sf_test['Hazard'], model.predict(sf_test))
+  #
