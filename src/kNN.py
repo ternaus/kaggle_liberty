@@ -34,7 +34,7 @@ params = {'n_neighbors': [4, 5, 6, 7, 10, 15],
           'leaf_size': [10, 20, 30],
           }
 
-ccv = GridSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1)
+ccv = GridSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1, cv=5)
 ccv.fit(X, y)
 
 report(ccv.grid_scores_)
