@@ -63,10 +63,10 @@ temp = pd.DataFrame()
 
 for train_index, test_index in kf:
   ind += 1
-  X_train = X.irow[train_index]
+  X_train = X.loc[train_index, :]
   y_train = y.values[train_index]
 
-  X_test = X.irow[test_index]
+  X_test = X.loc[test_index, :]
   y_test = y.values[test_index]
 
   '''
