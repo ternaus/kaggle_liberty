@@ -80,8 +80,8 @@ print 'coef_ = ', clf.coef_
 
 result_test = pd.DataFrame()
 
-result_test['nn'] = nn_test
-result_test['xgb'] = xgb_test
+result_test['nn'] = nn_test['Hazard']
+result_test['xgb'] = xgb_test['Hazard']
 
 
 final_prediction = clf.predict(result_test)
