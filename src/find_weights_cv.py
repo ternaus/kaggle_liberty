@@ -1,5 +1,6 @@
 from __future__ import division
 import numpy as np
+import math
 
 try:
   from src import Predict
@@ -61,6 +62,10 @@ coef = []
 
 temp = pd.DataFrame()
 
+uselog = True
+
+
+
 for train_index, test_index in kf:
   ind += 1
   X_train = X.loc[train_index, :]
@@ -74,8 +79,8 @@ for train_index, test_index in kf:
   [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
   '''
 
-  nn_prediction = NN.NN(X_train, y_train, X_test, y_test, uselog=True)
-  xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test, uselog=True)
+  nn_prediction = NN.NN(X_train, y_train, X_test, y_test, uselog=uselog)
+  xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test, uselog=uselog)
 
 
   # print np.reshape(nn_prediction, len(nn_prediction))
@@ -92,6 +97,10 @@ for train_index, test_index in kf:
   # result_train['xgb'] = xgb_prediction
 
   clf = LinearRegression(n_jobs=-1)
+
+  if uselog:
+    y_test = map(lambda x: math.log(1+x), y_test)
+
   clf.fit(result_train, y_test)
 
   intersect += [clf.intercept_]
