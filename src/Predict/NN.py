@@ -122,7 +122,7 @@ def NN(X_train, y_train, X_test, y_test):
 
   y_mean = y.mean()
   y_std = y.std()
-  target = (y_train - y_mean) / y_std
+  target = (y - y_mean) / y_std
 
   net1.fit(X, target.astype(np.float32))
 
