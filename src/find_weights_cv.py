@@ -56,13 +56,18 @@ result_nn = pd.DataFrame()
 result_xgb = pd.DataFrame()
 
 ind = 0
+intersect  = []
+coef = []
+
+temp = pd.DataFrame()
+
 for train_index, test_index in kf:
   ind += 1
-  X_train = X[train_index]
-  y_train = y[train_index]
+  X_train = X.irow[train_index]
+  y_train = y.values[train_index]
 
-  X_test = X[test_index]
-  y_test = y[test_index]
+  X_test = X.irow[test_index]
+  y_test = y.values[test_index]
 
   '''
   [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
@@ -79,30 +84,34 @@ for train_index, test_index in kf:
 
   result_train = pd.DataFrame()
 
-  result_nn[ind] = nn_prediction
-  result_xgb[ind] = xgb_prediction
-
-  result_train['nn'] = result_nn.mean(axis=1)
-  result_train['xgb'] = result_xgb.mean(axis=1)
+  result_train['nn'] = nn_prediction
+  result_train['xgb'] = xgb_prediction
 
   # result_train['nn'] = nn_prediction
   # result_train['xgb'] = xgb_prediction
 
-clf = LinearRegression(n_jobs=-1)
-clf.fit(result_train, y_test)
+  clf = LinearRegression(n_jobs=-1)
+  clf.fit(result_train, y_test)
 
-print 'intercept = ', clf.intercept_
-print 'coef_ = ', clf.coef_
+  intersect += [clf.intercept_]
+  coef += [clf.coef_]
 
-result_test = pd.DataFrame()
+  print 'intercept = ', clf.intercept_
+  print 'coef_ = ', clf.coef_
 
-result_test['nn'] = nn_test['Hazard']
-result_test['xgb'] = xgb_test['Hazard']
+  result_test = pd.DataFrame()
 
-final_prediction = clf.predict(result_test)
+  result_test['nn'] = nn_test['Hazard']
+  result_test['xgb'] = xgb_test['Hazard']
+
+  prediction = clf.predict(result_test)
+
+  temp[ind] = prediction
+
 
 submission = pd.DataFrame()
 submission['Id'] = nn_test['Id']
-submission['Hazard'] = final_prediction
+
+submission['Hazard'] = temp.mean(axis=1)
 
 submission.to_csv('linear/nn_xgb_cv5.csv', index=False)
