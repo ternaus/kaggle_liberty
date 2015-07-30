@@ -91,9 +91,9 @@ def NN(X_train, y_train, X_test, y_test, uselog=False):
       # layer parameters:
       input_shape=(None, X_train.shape[1]),
       dropout1_p=0.1,
-      hidden0_num_units=200,  # number of units in hidden layer
+      hidden0_num_units=400,  # number of units in hidden layer
       dropout2_p=0.3,
-      hidden1_num_units=200,  # number of units in hidden layer
+      hidden1_num_units=400,  # number of units in hidden layer
       output_nonlinearity=None,  # output layer uses identity function
       output_num_units=1,  # 1 target values
 

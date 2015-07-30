@@ -36,6 +36,10 @@ from sklearn.cross_validation import train_test_split
 
 random_state = 42
 
+xgb_test = pd.read_csv('predictions1/1438258857.28.csv')
+nn_test = pd.read_csv('predictions/1438258912.82.csv')
+
+
 '''
 [1] read train data and cut hold out set out of it
 '''
@@ -73,3 +77,17 @@ clf.fit(result_train, y_test)
 
 print 'intercept = ', clf.intercept_
 print 'coef_ = ', clf.coef_
+
+result_test = pd.DataFrame()
+
+result_test['nn'] = nn_test
+result_test['xgb'] = xgb_test
+
+
+final_prediction = clf.predict(result_test)
+
+submission = pd.DataFrame()
+submission['Id'] = nn_test['Id']
+submission['Hazard'] = final_prediction
+
+submission.to_csv('nn_xgb.csv', index=False)
