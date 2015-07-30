@@ -14,7 +14,7 @@ def XGB(X_train, y_train, X_test, y_test, uselog=False):
   '''
 
   X = gl.SFrame(X_train)
-  features = X.columns
+  features = X.column_names()
 
   test = gl.SFrame(X_test)
 
