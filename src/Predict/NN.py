@@ -111,6 +111,9 @@ def NN(X_train, y_train, X_test, y_test):
                   ]
       )
   scaler = StandardScaler()
+  print X_train.shape
+  print X_test.shape
+
   X = scaler.fit_transform(X_train).astype(np.float32)
   test = scaler.transform(X_test).astype(np.float32)
 

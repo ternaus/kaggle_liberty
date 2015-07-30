@@ -60,8 +60,8 @@ nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
 '''
 
 result_train = pd.DataFrame()
-result_train['xgb'] = xgb_prediction
 result_train['nn'] = nn_prediction
+result_train['xgb'] = xgb_prediction
 
 clf = LinearRegression(n_jobs=-1)
 clf.fit(result_train, y_test)
