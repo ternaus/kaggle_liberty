@@ -66,6 +66,7 @@ for train_index, test_index in kf:
   X_train = X.loc[train_index, :]
   y_train = y.values[train_index]
 
+
   X_test = X.loc[test_index, :]
   y_test = y.values[test_index]
 

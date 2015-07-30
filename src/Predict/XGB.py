@@ -12,12 +12,15 @@ def XGB(X_train, y_train, X_test, y_test, uselog=False):
   :param X_test:
   :return:
   '''
-  features = X_train.columns
+
   X = gl.SFrame(X_train)
+  features = X.columns
+
   test = gl.SFrame(X_test)
 
   X['Hazard'] = y_train
   test['Hazard'] = y_test
+  print(X['Hazard'][:10])
 
   if uselog:
     X['Hazard'] = X['Hazard'].apply(lambda x: math.log(1 + x))
