@@ -1,9 +1,10 @@
 from __future__ import division
 __author__ = 'Vladimir Iglovikov'
 
+import math
 import graphlab as gl
 
-def XGB(X_train, y_train, X_test, y_test):
+def XGB(X_train, y_train, X_test, y_test, uselog=False):
   '''
 
   :param X_train:
@@ -12,14 +13,18 @@ def XGB(X_train, y_train, X_test, y_test):
   :return:
   '''
   features = X_train.columns
-  X = X_train
-  X.loc[:, 'Hazard'] = y_train
-  test = X_test
+  X = gl.SFrame(X_train)
+  test = gl.SFrame(X_test)
 
-  test = gl.SFrame(test)
+  X['Hazard'] = y_train
   test['Hazard'] = y_test
 
-  model = gl.boosted_trees_regression.create(gl.SFrame(X_train),
+  if uselog:
+    X['Hazard'] = X['Hazard'].apply(lambda x: math.log(1 + x))
+    test['Hazard'] = test['Hazard'].apply(lambda x: math.log(1 + x))
+
+
+  model = gl.boosted_trees_regression.create(X,
                                              features=features,
                                              target='Hazard',
                                              validation_set=test,

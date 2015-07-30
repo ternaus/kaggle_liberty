@@ -54,8 +54,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
 '''
 
-nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
-xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
+nn_prediction = NN.NN(X_train, y_train, X_test, y_test, uselog=True)
+xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test, uselog=True)
 
 
 # print np.reshape(nn_prediction, len(nn_prediction))

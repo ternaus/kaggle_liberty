@@ -6,6 +6,7 @@ import numpy as np
 from lasagne import layers
 from lasagne.layers import DropoutLayer
 from sklearn.preprocessing import StandardScaler
+import math
 
 __author__ = 'Vladimir Iglovikov'
 
@@ -68,7 +69,7 @@ class AdjustVariable(object):
         getattr(nn, self.name).set_value(new_value)
 
 
-def NN(X_train, y_train, X_test, y_test):
+def NN(X_train, y_train, X_test, y_test, uselog=False):
   '''
 
   :param X_train:
@@ -134,5 +135,10 @@ def NN(X_train, y_train, X_test, y_test):
   result = net1.predict(test)
   result = np.reshape(result, len(y_test))
 
-  return map(helper, result)
+  result = map(helper, result)
+
+  if uselog:
+    result = map(lambda x: math.log(1 + x), result)
+
+  return result
 
