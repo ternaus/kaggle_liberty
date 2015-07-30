@@ -1,5 +1,9 @@
 from __future__ import division
-from src import Predict
+try:
+  from src import Predict
+except:
+  pass
+
 import sys
 sys.path += ['Predict']
 from sklearn.linear_model import LinearRegression
