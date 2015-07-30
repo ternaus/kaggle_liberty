@@ -7,8 +7,19 @@ except:
 import sys
 sys.path += ['Predict']
 from sklearn.linear_model import LinearRegression
-from src.Predict import XGB
-from src.Predict import NN
+
+try:
+  from src.Predict import XGB
+except:
+  pass
+
+try:
+  from src.Predict import NN
+except:
+  pass
+
+import XGB
+import NN
 
 __author__ = 'Vladimir Iglovikov'
 
