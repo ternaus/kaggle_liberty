@@ -6,8 +6,9 @@ from sklearn import metrics
 from gini_normalized import normalized_gini
 import numpy as np
 import pandas as pd
-from sklearn.grid_search import GridSearchCV
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
+
 from sklearn.preprocessing import StandardScaler
 
 def report(grid_scores, n_top=10):
@@ -22,23 +23,26 @@ def report(grid_scores, n_top=10):
 
 gini = metrics.make_scorer(normalized_gini, greater_is_better=True)
 
+
+random_state = 42
+
 joined = pd.read_csv('../data/joined.csv')
 train = joined[joined['Hazard'] != -1]
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
 
-scaler = StandardScaler()
+clf = RandomForestRegressor(n_jobs=-1, random_state=random_state)
 
-X = scaler.fit_transform(X)
+params = {'n_estimators' : [100, 200, 500, 1000],
+          'max_depth': range(4, 12),
+          'min_samples_split': range(2, 5),
+          'min_samples_leaf': range(1, 4),
+          'bootstrap': [True, False],
 
-clf = KNeighborsRegressor()
-
-params = {'n_neighbors': [4, 5, 6, 7, 10, 15],
-          'leaf_size': [10, 20, 30],
           }
 
-ccv = GridSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1, cv=5, verbose=10)
+ccv = RandomizedSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1, cv=5, verbose=10)
 ccv.fit(X, y)
 
 report(ccv.grid_scores_)
