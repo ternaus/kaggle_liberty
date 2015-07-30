@@ -120,7 +120,7 @@ def NN(X_train, y_train, X_test, y_test, uselog=False):
   X = scaler.fit_transform(X_train).astype(np.float32)
   test = scaler.transform(X_test).astype(np.float32)
 
-  y = y_train.values
+  y = y_train
   y.shape = (y.shape[0], 1)
 
   y_mean = y.mean()
