@@ -128,5 +128,11 @@ def NN(X_train, y_train, X_test, y_test):
 
   net1.fit(X, target.astype(np.float32))
 
-  return net1.predict(test)
+  def helper(x):
+    return (x * y_std) + y_mean
+
+  result = net1.predict(test)
+  result = np.reshape(result, len(y_test))
+
+  return map(helper, result)
 
