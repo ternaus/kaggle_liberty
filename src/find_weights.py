@@ -1,5 +1,7 @@
 from __future__ import division
 from src import Predict
+import sys
+sys.path += ['Predict']
 from sklearn.linear_model import LinearRegression
 from src.Predict import XGB
 from src.Predict import NN
