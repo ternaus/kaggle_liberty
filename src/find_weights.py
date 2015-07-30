@@ -32,8 +32,6 @@ import pandas as pd
 import os
 from sklearn.cross_validation import train_test_split
 
-
-
 random_state = 42
 
 '''
@@ -55,7 +53,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 '''
 
 xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
-nn_prediction = NN.nn(X_train, y_train, X_test, y_test)
+nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
 
 '''
 [3] Merge previous predictions into dataset and do linear regression on it
