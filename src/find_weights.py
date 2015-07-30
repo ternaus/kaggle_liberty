@@ -1,4 +1,6 @@
 from __future__ import division
+import numpy as np
+
 try:
   from src import Predict
 except:
@@ -52,20 +54,22 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
 '''
 
-nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
+nn_prediction = np.reshape(NN.NN(X_train, y_train, X_test, y_test), len(y_test))
 xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
 
 
+# print np.reshape(nn_prediction, len(nn_prediction))
 '''
 [3] Merge previous predictions into dataset and do linear regression on it
 '''
 
 result_train = pd.DataFrame()
+
 result_train['nn'] = nn_prediction
 result_train['xgb'] = xgb_prediction
 
 clf = LinearRegression(n_jobs=-1)
 clf.fit(result_train, y_test)
 
-print clf.intercept_
-print clf.coef_
+print 'intercept = ', clf.intercept_
+print 'coef_ = ', clf.coef_

@@ -81,15 +81,17 @@ def NN(X_train, y_train, X_test, y_test):
   net1 = NeuralNet(
       layers=[  # three layers: one hidden layer
           ('input', layers.InputLayer),
+          ('dropout1', DropoutLayer),
           ('hidden0', layers.DenseLayer),
-          ('dropout', DropoutLayer),
+          ('dropout2', DropoutLayer),
           ('hidden1', layers.DenseLayer),
           ('output', layers.DenseLayer),
           ],
       # layer parameters:
       input_shape=(None, X_train.shape[1]),
+      dropout1_p=0.1,
       hidden0_num_units=200,  # number of units in hidden layer
-      dropout_p=0.6,
+      dropout2_p=0.3,
       hidden1_num_units=200,  # number of units in hidden layer
       output_nonlinearity=None,  # output layer uses identity function
       output_num_units=1,  # 1 target values
@@ -100,7 +102,7 @@ def NN(X_train, y_train, X_test, y_test):
       # update_momentum=0.9,
       update_momentum=theano.shared(float32(0.9)),
       eval_size=0.2,
-      max_epochs=200,  # we want to train this many epochs
+      max_epochs=1000,  # we want to train this many epochs
       update_learning_rate=theano.shared(float32(0.03)),
       verbose=1,
       regression=True,  # flag to indicate we're dealing with regression problem
