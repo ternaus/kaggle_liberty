@@ -42,7 +42,7 @@ params = {'n_estimators' : [100, 200, 500, 1000],
 
           }
 
-ccv = RandomizedSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1, cv=5, verbose=10)
+ccv = RandomizedSearchCV(clf, param_distributions=params, scoring=gini, cv=5, verbose=10)
 ccv.fit(X, y)
 
 report(ccv.grid_scores_)

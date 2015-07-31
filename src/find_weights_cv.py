@@ -22,8 +22,15 @@ try:
 except:
   pass
 
+try:
+  from src.Predict import kNN
+except:
+  pass
+
+
 import XGB
 import NN
+import kNN
 
 __author__ = 'Vladimir Iglovikov'
 
@@ -39,6 +46,7 @@ random_state = 42
 
 xgb_test = pd.read_csv('predictions1/1438258857.28.csv')
 nn_test = pd.read_csv('predictions/1438258912.82.csv')
+knn_test = pd.read_csv('predictions/1438258912.82.csv')
 
 '''
 [1] read train data and cut hold out set out of it
@@ -55,6 +63,7 @@ kf = cross_validation.KFold(len(y), n_folds=5, random_state=random_state)
 
 result_nn = pd.DataFrame()
 result_xgb = pd.DataFrame()
+result_knn = pd.DataFrame()
 
 ind = 0
 intersect  = []
@@ -62,7 +71,7 @@ coef = []
 
 temp = pd.DataFrame()
 
-uselog = True
+uselog = False
 
 
 
@@ -70,7 +79,6 @@ for train_index, test_index in kf:
   ind += 1
   X_train = X.loc[train_index, :]
   y_train = y.values[train_index]
-
 
   X_test = X.loc[test_index, :]
   y_test = y.values[test_index]
@@ -81,7 +89,7 @@ for train_index, test_index in kf:
 
   nn_prediction = NN.NN(X_train, y_train, X_test, y_test, uselog=uselog)
   xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test, uselog=uselog)
-
+  knn_prediction = kNN.kNN(X_train, y_train, X_test, y_test, uselog=uselog)
 
   # print np.reshape(nn_prediction, len(nn_prediction))
   '''
@@ -92,6 +100,7 @@ for train_index, test_index in kf:
 
   result_train['nn'] = nn_prediction
   result_train['xgb'] = xgb_prediction
+  result_train['knn'] = knn_prediction
 
   # result_train['nn'] = nn_prediction
   # result_train['xgb'] = xgb_prediction
@@ -99,7 +108,7 @@ for train_index, test_index in kf:
   clf = LinearRegression(n_jobs=-1)
 
   if uselog:
-    y_test = map(lambda x: math.log(1+x), y_test)
+    y_test = map(lambda x: math.log(1 + x), y_test)
 
   clf.fit(result_train, y_test)
 
@@ -113,6 +122,7 @@ for train_index, test_index in kf:
 
   result_test['nn'] = nn_test['Hazard']
   result_test['xgb'] = xgb_test['Hazard']
+  result_test['knn'] = knn_test['Hazard']
 
   prediction = clf.predict(result_test)
 

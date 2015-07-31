@@ -42,3 +42,5 @@ ccv = GridSearchCV(clf, param_grid=params, scoring=gini, n_jobs=-1, cv=5, verbos
 ccv.fit(X, y)
 
 report(ccv.grid_scores_)
+
+
