@@ -30,7 +30,7 @@ def kNN(X_train, y_train, X_test, y_test, uselog=False):
   X = scaler.fit_transform(X_train)
   test = scaler.transform(X_test)
 
-  clf = KNeighborsRegressor()
+  clf = KNeighborsRegressor(n_neighbors=550)
 
   clf.fit(X, y_train)
 

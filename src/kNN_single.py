@@ -21,13 +21,16 @@ X_test = test.drop(['Hazard', 'Id'], 1)
 
 scaler = StandardScaler()
 
+print 'scaling train'
 X = scaler.fit_transform(X)
+
+print 'scaling test'
 X_test = scaler.transform(X_test)
 
 clf = KNeighborsRegressor(n_neighbors=550)
-
+print 'fitting'
 clf.fit(X, y)
-
+print 'predicting'
 prediction = clf.predict(X_test)
 submission = pd.DataFrame()
 submission['Id'] = test['Id']

@@ -44,9 +44,10 @@ from sklearn.cross_validation import train_test_split
 
 random_state = 42
 
-xgb_test = pd.read_csv('predictions1/1438258857.28.csv')
-nn_test = pd.read_csv('predictions/1438258912.82.csv')
-knn_test = pd.read_csv('predictions/1438258912.82.csv')
+
+nn_test = pd.read_csv('nn/1438300985.64.csv')
+xgb_test = pd.read_csv('xgb/1438301025.15.csv')
+knn_test = pd.read_csv('kNN/kNN_1438301367.06.csv')
 
 '''
 [1] read train data and cut hold out set out of it
