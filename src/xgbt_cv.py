@@ -47,7 +47,7 @@ params = {
   # 'subsample': 0.7,
   # 'colsabsample_bytree': 0.7,
   'scal_pos_weight': 1,
-  'silent': 0,
+  'silent': 1,
   # 'max_depth': 9
 }
 
