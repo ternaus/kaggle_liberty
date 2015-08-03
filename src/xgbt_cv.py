@@ -60,25 +60,10 @@ rs = ShuffleSplit(len(y), n_iter=5, test_size=0.2, random_state=random_state)
 
 score = []
 for train_index, test_index in rs:
-    a_train = X[train_index]
-    a_test = X[test_index]
-    b_train = y[train_index]
-    b_test = y[test_index]
-
-    xgtrain = xgb.DMatrix(a_train, label=b_train)
-    xgval = xgb.DMatrix(a_test, label=b_test)
-
-
-    watchlist = [(xgtrain, 'train'), (xgval, 'val')]
-    model = xgb.train(params, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-    preds = model.predict(xgval, ntree_limit=model.best_iteration)
-
-    print 'score:'
-    print normalized_gini(b_test, preds)
-
-    print("TRAIN:", train_index, "TEST:", test_index)
-
-    a_train, a_test, b_train, b_test = ShuffleSplit(X, y, test_size=0.2, random_state=random_state)
+    a_train = X.values[train_index]
+    a_test = X.values[test_index]
+    b_train = y.values[train_index]
+    b_test = y.values[test_index]
 
     xgtrain = xgb.DMatrix(a_train, label=b_train)
     xgval = xgb.DMatrix(a_test, label=b_test)
