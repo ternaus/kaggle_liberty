@@ -46,7 +46,7 @@ params = {
   # 'min_child_weight': 6,
   # 'subsample': 0.7,
   # 'colsabsample_bytree': 0.7,
-  # 'scal_pos_weight': 1,
+  'scal_pos_weight': 1,
   'silent': 0,
   # 'max_depth': 9
 }
@@ -58,23 +58,39 @@ params = list(params.items())
 
 rs = ShuffleSplit(len(y), n_iter=5, test_size=0.2, random_state=random_state)
 
-score = []
-for train_index, test_index in rs:
-    a_train = X.values[train_index]
-    a_test = X.values[test_index]
-    b_train = y.values[train_index]
-    b_test = y.values[test_index]
+result = []
 
-    xgtrain = xgb.DMatrix(a_train, label=b_train)
-    xgval = xgb.DMatrix(a_test, label=b_test)
+for min_child_weight in [4, 5, 6]:
+  for eta in [0.1, 0.005, 0.01]:
+    for colsabsample_bytree in [0.3, 0.5, 0.6, 0.7]:
+      for max_depth in [3, 4, 5, 6, 7, 8, 9, 10]:
+        for subsample in [0.5, 0.6, 0.7, 0.8, 0.9]:
+          params['min_child_weight'] = min_child_weight
+          params['eta'] = eta
+          params['colsabsample_bytree'] = colsabsample_bytree
+          params['max_depth'] = max_depth
+          params['subsample'] = subsample
+          score = []
+          for train_index, test_index in rs:
+
+            a_train = X.values[train_index]
+            a_test = X.values[test_index]
+            b_train = y.values[train_index]
+            b_test = y.values[test_index]
+
+            xgtrain = xgb.DMatrix(a_train, label=b_train)
+            xgval = xgb.DMatrix(a_test, label=b_test)
 
 
-    watchlist = [(xgtrain, 'train'), (xgval, 'val')]
-    model = xgb.train(params, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-    preds = model.predict(xgval, ntree_limit=model.best_iteration)
+            watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+            model = xgb.train(params, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+            preds = model.predict(xgval, ntree_limit=model.best_iteration)
 
 
-    score += [normalized_gini(b_test, preds)]
+            score += [normalized_gini(b_test, preds)]
 
-print 'score'
-print np.mean(score), np.std(score)
+          result += [(np.mean(score), np.std(score), min_child_weight, eta, colsabsample_bytree, max_depth, subsample)]
+
+result.sort()
+print result
+
