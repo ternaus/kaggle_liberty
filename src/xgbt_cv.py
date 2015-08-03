@@ -53,8 +53,6 @@ params = {
 
 num_rounds = 10000
 random_state = 42
-params = list(params.items())
-
 
 rs = ShuffleSplit(len(y), n_iter=5, test_size=0.2, random_state=random_state)
 
