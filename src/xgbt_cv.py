@@ -71,6 +71,7 @@ for min_child_weight in [4, 5, 6]:
           params['max_depth'] = max_depth
           params['subsample'] = subsample
           score = []
+          params_new = list(params.items())
           for train_index, test_index in rs:
 
             a_train = X.values[train_index]
@@ -83,7 +84,7 @@ for min_child_weight in [4, 5, 6]:
 
 
             watchlist = [(xgtrain, 'train'), (xgval, 'val')]
-            model = xgb.train(params, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+            model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
             preds = model.predict(xgval, ntree_limit=model.best_iteration)
 
 
