@@ -13,7 +13,7 @@ import xgboost as xgb
 from gini_normalized import normalized_gini
 import numpy as np
 
-n_iter = 2
+n_iter = 10
 random_state = 42
 
 train = pd.read_csv('../data/train.csv')
