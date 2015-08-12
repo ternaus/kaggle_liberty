@@ -18,7 +18,6 @@ random_state = 42
 
 train = pd.read_csv('../data/train.csv')
 
-rs = cross_validation.StratifiedKFold(y, n_folds=n_iter, shuffle=True, random_state=random_state)
 
 features_cat = ['T1_V4',
             'T1_V5',
@@ -60,6 +59,7 @@ X_cat = pd.get_dummies(train[features_cat])
 X_num = train[features_num]
 
 y = train['Hazard']
+rs = cross_validation.StratifiedKFold(y, n_folds=n_iter, shuffle=True, random_state=random_state)
 
 num_rounds = 10000
 params = {
