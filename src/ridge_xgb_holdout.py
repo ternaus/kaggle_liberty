@@ -77,6 +77,9 @@ columns = X.columns
 
 X1, y1, X2_t, y2_t = train_test_split(X.values, y.values, test_size=0.6, random_state=random_state)
 
+print X2_t.shape
+print y2_t.shape
+
 X2, y2, X3, y3 = train_test_split(X2_t, y2_t, test_size=0.2, random_state=random_state)
 
 X1 = pd.DataFrame(X1)
