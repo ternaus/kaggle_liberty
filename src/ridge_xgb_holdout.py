@@ -70,12 +70,21 @@ params = {
   # 'max_depth': 9
 }
 
+
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
+columns = X.columns
 
-X1, y1, X2_t, y2_t = train_test_split(train, y, test_size=0.6, random_state=random_state)
+X1, y1, X2_t, y2_t = train_test_split(X.values, y.values, test_size=0.6, random_state=random_state)
+
 X2, y2, X3, y3 = train_test_split(X2_t, y2_t, test_size=0.2, random_state=random_state)
 
+X1 = pd.DataFrame(X1)
+X1.columns = columns
+X2 = pd.DataFrame(X2)
+X2.columns = columns
+X3 = pd.DataFrame(X3)
+X3.columns = columns
 X1_cat = pd.get_dummies(X1[features_cat])
 clf_cat = Ridge(normalize=True, alpha=0.1)
 clf_cat.fit(X1_cat, y1)
