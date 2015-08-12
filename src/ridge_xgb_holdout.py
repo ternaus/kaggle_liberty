@@ -72,8 +72,8 @@ params = {
 
 y = train['Hazard']
 
-X1, y1, X2, y2 = train_test_split(train, y, test_size=0.6, random_state=random_state)
-X2, y2, X3, y3 = train_test_split(X2, y2, test_size=0.2, random_state=random_state)
+X1, y1, X2_t, y2_t = train_test_split(train, y, test_size=0.6, random_state=random_state)
+X2, y2, X3, y3 = train_test_split(X2_t, y2_t, test_size=0.2, random_state=random_state)
 
 X1_cat = pd.get_dummies(X1[features_cat])
 clf_cat = Ridge(normalize=True, alpha=0.1)
