@@ -27,6 +27,7 @@ model.add(Activation('sigmoid'))
 model.add(Dropout(0.1))
 model.add(Dense(256, 1))
 
+print 'comiling network'
 model.compile(loss='mse', optimizer='rmsprop')
 
 # train model, test on 15% hold out data
