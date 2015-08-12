@@ -71,6 +71,7 @@ params = {
 }
 
 y = train['Hazard']
+X = train.drop(['Hazard', 'Id'], 1)
 
 X1, y1, X2_t, y2_t = train_test_split(train, y, test_size=0.6, random_state=random_state)
 X2, y2, X3, y3 = train_test_split(X2_t, y2_t, test_size=0.2, random_state=random_state)
