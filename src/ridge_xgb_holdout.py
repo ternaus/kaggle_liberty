@@ -73,6 +73,9 @@ params = {
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
+
+print X.shape
+print y.shape
 columns = X.columns
 
 X1, y1, X2_t, y2_t = train_test_split(X.values, y.values, test_size=0.6, random_state=random_state)
