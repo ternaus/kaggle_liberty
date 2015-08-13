@@ -98,8 +98,9 @@ clf_cat.fit(X1_cat, y1)
 
 
 X2_cat = pd.get_dummies(X2[features_cat])
-del X2_cat['T1_V5_E']
+
 X3_cat = pd.get_dummies(X3[features_cat])
+del X3_cat['T1_V5_E']
 
 print X1_cat.columns
 print X2_cat.columns
