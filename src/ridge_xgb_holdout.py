@@ -74,6 +74,19 @@ params = {
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
 
+X_cat = X[features_cat]
+X2_num = X[features_num]
+
+rs1 = cross_validation.ShuffleSplit(y, n_iter=1, test_size=0.6, random_state=random_state)
+X1_index, X2_index = next(iter(rs1))
+
+X1_cat = X_cat.loc[X1_index, :]
+y1 = y.values[X1_index, :]
+
+rs2 = cross_validation.ShuffleSplit(len(X2_index), n_iter=1, test_size=0.6, random_state=random_state)
+X2_index, X3_index = next(iter(rs2))
+
+
 print X.shape
 print y.shape
 columns = X.columns
