@@ -99,6 +99,8 @@ clf_cat.fit(X1_cat, y1)
 X2_cat = pd.get_dummies(X2[features_cat])
 X3_cat = pd.get_dummies(X3[features_cat])
 
+print X1_cat.columns
+print X2_cat.columns
 prediction_cat_2 = clf_cat.predict(X2_cat)
 prediction_cat_3 = clf_cat.predict(X3_cat)
 
