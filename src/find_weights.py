@@ -22,6 +22,8 @@ except:
 
 import XGB
 import NN
+import Ridge
+import RF
 
 __author__ = 'Vladimir Iglovikov'
 
@@ -36,8 +38,8 @@ from sklearn.cross_validation import train_test_split
 
 random_state = 42
 
-xgb_test = pd.read_csv('predictions1/1438258857.28.csv')
-nn_test = pd.read_csv('predictions/1438258912.82.csv')
+# xgb_test = pd.read_csv('predictions1/1438258857.28.csv')
+# nn_test = pd.read_csv('predictions/1438258912.82.csv')
 
 
 '''
@@ -58,8 +60,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
 '''
 
-nn_prediction = NN.NN(X_train, y_train, X_test, y_test, uselog=True)
-xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test, uselog=True)
+nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
+xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
+rf_prediction = RF.RF(X_train, y_train, X_test, y_test)
+ridge_prediction = Ridge.Ridge(X_train, y_train, X_test, y_test)
 
 
 # print np.reshape(nn_prediction, len(nn_prediction))
@@ -71,23 +75,25 @@ result_train = pd.DataFrame()
 
 result_train['nn'] = nn_prediction
 result_train['xgb'] = xgb_prediction
+result_train['rf'] = rf_prediction
+result_train['ridge'] = ridge_prediction
 
 clf = LinearRegression(n_jobs=-1)
 clf.fit(result_train, y_test)
 
 print 'intercept = ', clf.intercept_
 print 'coef_ = ', clf.coef_
-
-result_test = pd.DataFrame()
-
-result_test['nn'] = nn_test['Hazard']
-result_test['xgb'] = xgb_test['Hazard']
-
-
-final_prediction = clf.predict(result_test)
-
-submission = pd.DataFrame()
-submission['Id'] = nn_test['Id']
-submission['Hazard'] = final_prediction
-
-submission.to_csv('linear/nn_xgb.csv', index=False)
+#
+# result_test = pd.DataFrame()
+#
+# result_test['nn'] = nn_test['Hazard']
+# result_test['xgb'] = xgb_test['Hazard']
+#
+#
+# final_prediction = clf.predict(result_test)
+#
+# submission = pd.DataFrame()
+# submission['Id'] = nn_test['Id']
+# submission['Hazard'] = final_prediction
+#
+# submission.to_csv('linear/nn_xgb.csv', index=False)
