@@ -67,7 +67,8 @@ features = [
 
 ind = 1
 if ind == 1:
-  sf_train, sf_test = train.random_split(.8, seed=42)
+  sf_train, sf_test = train.random_split(0.8, seed=42)
+  
   model = gl.boosted_trees_regression.create(sf_train, 
                                            features=features, 
                                            target='Hazard', 

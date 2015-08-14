@@ -16,12 +16,22 @@ except:
   pass
 
 try:
-  from src.Predict import NN
+  from src.Predict import RF
 except:
   pass
 
+try:
+  from src.Predict import Ridge_clf
+except:
+  pass
+
+# try:
+#   from src.Predict import NN
+# except:
+#   pass
+
 import XGB
-import NN
+# import NN
 import Ridge
 import RF
 
@@ -54,16 +64,16 @@ y = train['Hazard']
 X = train.drop(['Id', 'Hazard'], 1)
 
 #cut holdout set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=random_state)
 
 '''
 [2] Do XGB and NN simulation on the train set and create prediction on the hold out set.
 '''
 
-nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
+# nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
 xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
 rf_prediction = RF.RF(X_train, y_train, X_test, y_test)
-ridge_prediction = Ridge.Ridge(X_train, y_train, X_test, y_test)
+# ridge_prediction = Ridge.Ridge_clf(X_train, y_train, X_test, y_test)
 
 
 # print np.reshape(nn_prediction, len(nn_prediction))
@@ -73,12 +83,12 @@ ridge_prediction = Ridge.Ridge(X_train, y_train, X_test, y_test)
 
 result_train = pd.DataFrame()
 
-result_train['nn'] = nn_prediction
+# result_train['nn'] = nn_prediction
 result_train['xgb'] = xgb_prediction
 result_train['rf'] = rf_prediction
-result_train['ridge'] = ridge_prediction
+# result_train['ridge'] = ridge_prediction
 
-clf = LinearRegression(n_jobs=-1)
+clf = LinearRegression(fit_intercept=False, n_jobs=-1)
 clf.fit(result_train, y_test)
 
 print 'intercept = ', clf.intercept_
