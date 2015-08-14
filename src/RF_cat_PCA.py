@@ -70,6 +70,8 @@ for n in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
 
   X_cat = pca.fit_transform(X_cat_original)
 
+  print X_cat
+
   X = pd.concat([X_cat, X_num], 1)
   print X.shape
   clf = RandomForestRegressor(n_estimators=1000, max_features='sqrt', n_jobs=-1)
