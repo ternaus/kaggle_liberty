@@ -53,7 +53,12 @@ num_features = [
 
 y = train['Hazard']
 
-X_cat = train[cat_features]
+scaler = StandardScaler(with_std=False)
+
+X_cat_original = pd.get_dummies(train[cat_features])
+
+X_cat_original = scaler.fit_transform(X_cat_original)
+
 X_num = train[num_features]
 
 scores_mean = []
@@ -62,9 +67,8 @@ gini = metrics.make_scorer(normalized_gini, greater_is_better=True)
 
 for n in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
   pca = PCA(n_components=n)
-  scaler = StandardScaler(with_std=False)
-  X_cat = scaler.fit_transform(X_cat)
-  X_cat = pca.fit_transform(X_cat)
+
+  X_cat = pca.fit_transform(X_cat_original)
 
   X = pd.concat([X_cat, X_num], 1)
   print X.shape
