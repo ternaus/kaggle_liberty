@@ -54,15 +54,15 @@ params = {
 num_rounds = 10000
 random_state = 42
 
-rs = ShuffleSplit(len(y), n_iter=5, test_size=0.2, random_state=random_state)
+rs = ShuffleSplit(len(y), n_iter=10, test_size=0.5, random_state=random_state)
 
 result = []
 
-for min_child_weight in [4, 5, 6]:
-  for eta in [0.1, 0.005, 0.01]:
-    for colsabsample_bytree in [0.3, 0.5, 0.6, 0.7]:
-      for max_depth in [3, 4, 5, 6, 7, 8, 9, 10]:
-        for subsample in [0.5, 0.6, 0.7, 0.8, 0.9]:
+for min_child_weight in [9]:
+  for eta in [0.005]:
+    for colsabsample_bytree in [0.7]:
+      for max_depth in [7]:
+        for subsample in [0.7]:
           params['min_child_weight'] = min_child_weight
           params['eta'] = eta
           params['colsabsample_bytree'] = colsabsample_bytree
