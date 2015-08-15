@@ -61,7 +61,8 @@ for n_estimators in [10]:
                                         max_features=max_features,
                                         max_depth=max_depth,
                                         min_samples_leaf=min_samples_leaf,
-                                        n_jobs=-1)
+                                        n_jobs=-1,
+                                        random_state=random_state)
 
             clf.fit(a_train, b_train)
 
