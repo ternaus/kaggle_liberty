@@ -118,11 +118,13 @@ net1 = NeuralNet(
       update_learning_rate=theano.shared(float32(0.03)),
       verbose=1,
       regression=True,  # flag to indicate we're dealing with regression problem
-      # on_epoch_finished=[
-      #                 AdaptiveVariable('update_learning_rate', start=0.001, stop=0.00001),
-      #                 AdjustVariable('update_momentum', start=0.9, stop=0.999),
-      #                 EarlyStopping(),
-      #             ]
+      on_epoch_finished=[
+                      AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
+                      AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                      # AdaptiveVariable('update_learning_rate', start=0.03, stop=0.0001),
+                      # AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                      EarlyStopping(),
+                  ]
       )
 
 
