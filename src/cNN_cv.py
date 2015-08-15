@@ -2,7 +2,7 @@
 from __future__ import division
 from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet
-from nolearn.lasagne.base import TrainSplit
+# from nolearn.lasagne.base import TrainSplit
 from sklearn.cross_validation import ShuffleSplit
 import theano
 import numpy as np
@@ -111,9 +111,9 @@ net1 = NeuralNet(
       # update_learning_rate=0.001,
       # update_momentum=0.9,
       update_momentum=theano.shared(float32(0.9)),
-      train_split=TrainSplit(eval_size=0.2),
+      # train_split=TrainSplit(eval_size=0.2),
 
-      # eval_size=0.2,
+      eval_size=0.2,
       max_epochs=100,  # we want to train this many epochs
       update_learning_rate=theano.shared(float32(0.03)),
       verbose=1,
