@@ -53,6 +53,7 @@ params = {
 
 num_rounds = 10000
 random_state = 42
+offset = 5000
 
 rs = ShuffleSplit(len(y), n_iter=10, test_size=0.5, random_state=random_state)
 
@@ -77,13 +78,14 @@ for min_child_weight in [9]:
             b_train = y.values[train_index]
             b_test = y.values[test_index]
 
-            xgtrain = xgb.DMatrix(a_train, label=b_train)
-            xgval = xgb.DMatrix(a_test, label=b_test)
+            xgtrain = xgb.DMatrix(a_train[offset:, :], label=b_train[offset:])
+            xgval = xgb.DMatrix(a_train[:offset, :], label=b_train[:offset])
 
+            xtest = xgb.DMatrix(a_test, label=b_test)
 
             watchlist = [(xgtrain, 'train'), (xgval, 'val')]
             model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-            preds = model.predict(xgval, ntree_limit=model.best_iteration)
+            preds = model.predict(xgtest, ntree_limit=model.best_iteration)
 
 
             score += [normalized_gini(b_test, preds)]

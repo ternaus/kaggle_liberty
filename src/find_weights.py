@@ -31,6 +31,7 @@ except:
 #   pass
 
 import XGB
+import XGBT
 # import NN
 import Ridge
 import RF
@@ -71,7 +72,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_
 '''
 
 # nn_prediction = NN.NN(X_train, y_train, X_test, y_test)
-xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
+# xgb_prediction = XGB.XGB(X_train, y_train, X_test, y_test)
+xgbt_prediction = xgbt.XGBT(X_train, y_train, X_test, y_test)
 rf_prediction = RF.RF(X_train, y_train, X_test, y_test)
 # ridge_prediction = Ridge.Ridge_clf(X_train, y_train, X_test, y_test)
 
@@ -84,7 +86,8 @@ rf_prediction = RF.RF(X_train, y_train, X_test, y_test)
 result_train = pd.DataFrame()
 
 # result_train['nn'] = nn_prediction
-result_train['xgb'] = xgb_prediction
+# result_train['xgb'] = xgb_prediction
+result_train['xgbt'] = xgbt_prediction
 result_train['rf'] = rf_prediction
 # result_train['ridge'] = ridge_prediction
 
