@@ -145,8 +145,9 @@ for train_index, test_index in rs:
 
   X = scaler.fit_transform(a_train).astype(np.float32)
   X_reshaped = X.reshape(-1, 1, 10, 10)
+
+  test = scaler.transform(a_test).astype(np.float32)
   test_reshaped = test.reshape(-1, 1, 10, 10)
-  # test = scaler.transform(a_test).astype(np.float32)
 
   y = b_train[:]
   y.shape = (y.shape[0], 1)
