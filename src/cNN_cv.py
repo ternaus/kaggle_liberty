@@ -79,7 +79,7 @@ train = joined[joined['Hazard'] != -1]
 test = joined[joined['Hazard'] == -1]
 
 y_train = train['Hazard']
-X_train = train.drop(['Hazard', 'Id'], 1)
+X_train = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10', 'tp_84', 'tp_59'], 1)
 X_test = test.drop(['Hazard', 'Id'], 1)
 
 
