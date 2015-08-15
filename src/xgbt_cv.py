@@ -60,12 +60,12 @@ result = []
 
 for min_child_weight in [9]:
   for eta in [0.005]:
-    for colsabsample_bytree in [0.7]:
+    for colsample_bytree in [0.7]:
       for max_depth in [7]:
         for subsample in [0.7]:
           params['min_child_weight'] = min_child_weight
           params['eta'] = eta
-          params['colsabsample_bytree'] = colsabsample_bytree
+          params['colsabsample_bytree'] = colsample_bytree
           params['max_depth'] = max_depth
           params['subsample'] = subsample
           score = []
@@ -88,7 +88,7 @@ for min_child_weight in [9]:
 
             score += [normalized_gini(b_test, preds)]
 
-          result += [(np.mean(score), np.std(score), min_child_weight, eta, colsabsample_bytree, max_depth, subsample)]
+          result += [(np.mean(score), np.std(score), min_child_weight, eta, colsample_bytree, max_depth, subsample)]
 
 result.sort()
 print result

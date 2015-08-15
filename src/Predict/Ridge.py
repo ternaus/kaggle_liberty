@@ -8,12 +8,13 @@ from lasagne.layers import DropoutLayer
 from sklearn.preprocessing import StandardScaler
 import math
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import Ridge
 
 __author__ = 'Vladimir Iglovikov'
 
 
 
-def Ridge(X_train, y_train, X_test, y_test, uselog=False):
+def Ridge_clf(X_train, y_train, X_test, y_test, uselog=False):
   '''
 
   :param X_train:
@@ -25,7 +26,7 @@ def Ridge(X_train, y_train, X_test, y_test, uselog=False):
 
 
 
-  # clf = KNeighborsRegressor(n_neighbors=550)
+
   clf = Ridge(normalize=True, alpha=0.1)
   clf.fit(X_train, y_train)
 
