@@ -15,7 +15,7 @@ from gini_normalized import normalized_gini
 # train = joined[joined['Hazard'] != -1]
 # test = joined[joined['Hazard'] == -1]
 
-train = pd.read_csv('../train.csv')
+train = pd.read_csv('../data/train.csv')
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
