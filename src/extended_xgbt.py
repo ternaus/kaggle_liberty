@@ -1,4 +1,6 @@
 from __future__ import division
+from sklearn.preprocessing import LabelEncoder
+
 __author__ = 'Vladimir Iglovikov'
 
 '''
@@ -78,6 +80,15 @@ for train_index, test_index in rs:
 
   a_train.drop("Hazard", 1, inplace=True)
   a_test.drop("Hazard", 1, inplace=True)
+
+  dummies = pd.get_dummies(a_train)
+  a_train = pd.concat([a_train, dummies], 1)
+
+  dummies = pd.get_dummies(a_test)
+  a_test = pd.concat([a_test, dummies], 1)
+
+  a_train.drop(features, 1, inplace=True)
+  a_test.drop(features, 1, inplace=True)
 
   xgtrain = xgb.DMatrix(a_train.values[offset:, :], label=b_train[offset:])
   xgval = xgb.DMatrix(a_train.values[:offset, :], label=b_train[:offset])
