@@ -76,8 +76,8 @@ for train_index, test_index in rs:
     a_train = a_train.merge(df)
     a_test = a_test.merge(df)
 
-  a_train.frop("Hazard", 1, inplace=True)
-  a_test.frop("Hazard", 1, inplace=True)
+  a_train.drop("Hazard", 1, inplace=True)
+  a_test.drop("Hazard", 1, inplace=True)
 
   xgtrain = xgb.DMatrix(a_train.values[offset:, :], label=b_train[offset:])
   xgval = xgb.DMatrix(a_train.values[:offset, :], label=b_train[:offset])
