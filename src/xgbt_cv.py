@@ -15,7 +15,8 @@ train = pd.read_csv('../data/train_new.csv')
 hold = pd.read_csv('../data/hold_new.csv')
 test = pd.read_csv('../data/test.csv')
 
-train, hold, test = to_labels((train, hold, test))
+par = (train, hold, test)
+train, hold, test = to_labels(par)
 
 y = train['Hazard']
 # X = train.drop(['Hazard', 'Id'], 1)

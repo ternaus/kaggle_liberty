@@ -29,7 +29,7 @@ def to_labels(par):
   hold_new = par[1]
 
   if len(par) == 3:
-    test_new = par[1]
+    test_new = par[2]
 
   for feature in features_cat:
     le = LabelEncoder()
