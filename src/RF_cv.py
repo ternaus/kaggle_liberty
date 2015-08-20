@@ -9,70 +9,73 @@ import xgboost as xgb
 from sklearn.cross_validation import ShuffleSplit
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
+from preprocessing.to_labels import to_labels
+from gini_normalized import normalized_gini
 
-joined = pd.read_csv('../data/joined.csv')
+# joined = pd.read_csv('../data/joined.csv')
+#
+# train = joined[joined['Hazard'] != -1]
+# test = joined[joined['Hazard'] == -1]
 
-train = joined[joined['Hazard'] != -1]
-test = joined[joined['Hazard'] == -1]
+train = pd.read_csv('../data/train_new.csv')
+hold = pd.read_csv('../data/hold_new.csv')
+
+train, test = to_labels(train, hold)
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id'], 1)
 X_test = test.drop(['Hazard', 'Id'], 1)
 
-def gini(solution, submission):
-    df = zip(solution, submission, range(len(solution)))
-    df = sorted(df, key=lambda x: (x[1],-x[2]), reverse=True)
-    rand = [float(i+1)/float(len(df)) for i in range(len(df))]
-    totalPos = float(sum([x[0] for x in df]))
-    cumPosFound = [df[0][0]]
-    for i in range(1, len(df)):
-        cumPosFound.append(cumPosFound[len(cumPosFound)-1] + df[i][0])
-    Lorentz = [float(x)/totalPos for x in cumPosFound]
-    Gini = [Lorentz[i]-rand[i] for i in range(len(df))]
-    return sum(Gini)
-
-def normalized_gini(solution, submission):
-    normalized_gini = gini(solution, submission)/gini(solution, solution)
-    return normalized_gini
-
-
 
 random_state = 42
 
-rs = ShuffleSplit(len(y), n_iter=10, test_size=0.5, random_state=random_state)
+ind = 1
 
-result = []
+if ind == 1:
+  rs = ShuffleSplit(len(y), n_iter=10, test_size=0.5, random_state=random_state)
 
-for n_estimators in [10]:
-  for min_samples_split in [2]:
-    for max_features in [0.7]:
-      for max_depth in [7]:
-        for min_samples_leaf in [1]:
-          score = []
-          for train_index, test_index in rs:
+  result = []
 
-            a_train = X.values[train_index]
-            a_test = X.values[test_index]
-            b_train = y.values[train_index]
-            b_test = y.values[test_index]
+  for n_estimators in [10]:
+    for min_samples_split in [2]:
+      for max_features in [0.7]:
+        for max_depth in [7]:
+          for min_samples_leaf in [1]:
+            score = []
+            for train_index, test_index in rs:
 
-            clf = RandomForestRegressor(n_estimators=n_estimators,
-                                        min_samples_split=min_samples_split,
-                                        max_features=max_features,
-                                        max_depth=max_depth,
-                                        min_samples_leaf=min_samples_leaf,
-                                        n_jobs=-1,
-                                        random_state=random_state)
+              a_train = X.values[train_index]
+              a_test = X.values[test_index]
+              b_train = y.values[train_index]
+              b_test = y.values[test_index]
 
-            clf.fit(a_train, b_train)
+              clf = RandomForestRegressor(n_estimators=n_estimators,
+                                          min_samples_split=min_samples_split,
+                                          max_features=max_features,
+                                          max_depth=max_depth,
+                                          min_samples_leaf=min_samples_leaf,
+                                          n_jobs=-1,
+                                          random_state=random_state)
 
-            preds = clf.predict(a_test)
+              clf.fit(a_train, b_train)
 
+              preds = clf.predict(a_test)
 
-            score += [normalized_gini(b_test, preds)]
+              score += [normalized_gini(b_test, preds)]
 
-          result += [(np.mean(score), np.std(score), n_estimators, min_samples_split, min_samples_leaf, max_depth, max_features)]
+            result += [(np.mean(score), np.std(score), n_estimators, min_samples_split, min_samples_leaf, max_depth, max_features)]
 
-result.sort()
-print result
+  result.sort()
+  print result
 
+elif ind == 3:
+  clf = RandomForestRegressor(n_estimators=100,
+                              min_samples_split=2,
+                              max_features=0.4,
+                              max_depth=7,
+                              min_samples_leaf=1,
+                              n_jobs=-1,
+                              random_state=random_state)
+  clf.fit(X, y)
+  prediction = clf.predict(X_test)
+  print 'score on the hold = ', normalized_gini(test['Hazard'], prediction)
