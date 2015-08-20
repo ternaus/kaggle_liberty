@@ -19,13 +19,15 @@ from gini_normalized import normalized_gini
 
 train = pd.read_csv('../data/train_new.csv')
 hold = pd.read_csv('../data/hold_new.csv')
+test = pd.read_csv('../data/test.csv')
+# hold = pd.read_csv('../data/hold_new.csv')
 
-train, test = to_labels(train, hold)
+train, hold = to_labels((train, hold))
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
-X_test = test.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
-
+X_hold = hold.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_test = hold.drop(['Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 
 random_state = 42
 
@@ -77,8 +79,8 @@ elif ind == 3:
                               n_jobs=-1,
                               random_state=random_state)
   clf.fit(X, y)
-  prediction = clf.predict(X_test)
-  print 'score on the hold = ', normalized_gini(test['Hazard'], prediction)
+  prediction = clf.predict(X_hold)
+  print 'score on the hold = ', normalized_gini(hold['Hazard'], prediction)
 
 elif ind == 2:
   clf = RandomForestRegressor(n_estimators=100,
@@ -89,8 +91,14 @@ elif ind == 2:
                               n_jobs=-1,
                               random_state=random_state)
   clf.fit(X, y)
-  prediction = clf.predict(X_test)
+  prediction_hold = clf.predict(X_hold)
   submission = pd.DataFrame()
-  submission['Id'] = test['Id']
-  submission['Hazard'] = prediction
+  submission['Id'] = hold['Id']
+  submission['Hazard'] = prediction_hold
   submission.to_csv("preds_on_hold/RF.csv", index=False)
+
+  prediction_test = clf.predict(X_test)
+  submission = pd.DataFrame()
+  submission['Id'] = hold['Id']
+  submission['Hazard'] = prediction_test
+  submission.to_csv("preds_on_test/RF.csv", index=False)

@@ -8,7 +8,7 @@ import numpy as np
 This script will encode labels
 '''
 
-def to_labels(train, test):
+def to_labels(par):
   features_cat = ["T1_V11",
                   "T1_V12",
                   "T1_V15",
@@ -25,13 +25,22 @@ def to_labels(train, test):
                   "T2_V13",
                   "T2_V3",
                   "T2_V5"]
-  train_new = train
-  test_new = test
+  train_new = par[0]
+  hold_new = par[1]
+
+  if len(par) == 3:
+    test_new = par[1]
 
   for feature in features_cat:
     le = LabelEncoder()
 
-    le.fit(np.hstack([train_new[feature].values, test_new[feature].values]))
+    le.fit(np.hstack([train_new[feature].values, hold_new[feature].values]))
     train_new[feature] = le.transform(train_new[feature])
-    test_new[feature] = le.transform(test_new[feature])
-  return train_new, test_new
+    hold_new[feature] = le.transform(hold_new[feature])
+    if len(par) == 3:
+      test_new[feature] = le.transform(test_new[feature])
+
+  if len(par) == 2:
+    return train_new, hold_new
+  elif len(par) == 3:
+    return train_new, hold_new

@@ -13,15 +13,17 @@ from preprocessing.to_labels import to_labels
 
 train = pd.read_csv('../data/train_new.csv')
 hold = pd.read_csv('../data/hold_new.csv')
+test = pd.read_csv('../data/test.csv')
 
-train, test = to_labels(train, hold)
+train, hold, test = to_labels((train, hold, test))
 
 y = train['Hazard']
 # X = train.drop(['Hazard', 'Id'], 1)
 # X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10', 'tp_59', 'tp_84', 'global_mean', 'global_median', 'global_std'], 1)
 # X_test = test.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10', 'tp_59', 'tp_84', 'global_mean', 'global_median', 'global_std'], 1)
 X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
-X_test = test.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_hold = hold.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_test = test.drop(['Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 
 #
 
@@ -93,10 +95,11 @@ if ind == 1:
   print result
 
 elif ind == 2:
-  X_test.fillna(-1, inplace=True)
   xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
   xgval = xgb.DMatrix(X.values[:offset, :], label=y.values[:offset])
+  xghold = xgb.DMatrix(X_hold.values)
   xgtest = xgb.DMatrix(X_test.values)
+
   watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
   params = {
@@ -112,18 +115,25 @@ elif ind == 2:
   }    
   params_new = list(params.items())
   model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-  prediction = model.predict(xgtest, ntree_limit=model.best_iteration)
+  prediction_hold = model.predict(xghold, ntree_limit=model.best_iteration)
   
   submission = pd.DataFrame()
+  submission['Id'] = hold['Id']
+  submission['Hazard'] = prediction_hold
+  submission.to_csv("preds_on_hold/xgbt.csv", index=False)
+
+  prediction_test = model.predict(xgtest, ntree_limit=model.best_iteration)
+
+  submission = pd.DataFrame()
   submission['Id'] = test['Id']
-  submission['Hazard'] = prediction
-  submission.to_csv("xgbt/xgbt_6.csv", index=False)
+  submission['Hazard'] = prediction_test
+  submission.to_csv("preds_on_test/xgbt.csv", index=False)
+
 
 elif ind == 3:
-  X_test.fillna(-1, inplace=True)
   xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
   xgval = xgb.DMatrix(X.values[:offset, :], label=y.values[:offset])
-  xgtest = xgb.DMatrix(X_test.values)
+  xghold = xgb.DMatrix(X_hold.values)
   watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
   params = {
@@ -139,5 +149,5 @@ elif ind == 3:
   }
   params_new = list(params.items())
   model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-  prediction = model.predict(xgtest, ntree_limit=model.best_iteration)
-  print 'score on the hold = ', normalized_gini(test['Hazard'], prediction)
+  prediction = model.predict(xghold, ntree_limit=model.best_iteration)
+  print 'score on the hold = ', normalized_gini(hold['Hazard'], prediction)
