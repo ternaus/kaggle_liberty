@@ -34,7 +34,11 @@ def to_labels(par):
   for feature in features_cat:
     le = LabelEncoder()
 
-    le.fit(np.hstack([train_new[feature].values, hold_new[feature].values]))
+    if len(par) == 2:
+      le.fit(np.hstack([train_new[feature].values, hold_new[feature].values]))
+    elif len(par) == 3:
+      le.fit(np.hstack([train_new[feature].values, hold_new[feature].values, hold_new[feature].values]))
+
     train_new[feature] = le.transform(train_new[feature])
     hold_new[feature] = le.transform(hold_new[feature])
     if len(par) == 3:
@@ -43,4 +47,4 @@ def to_labels(par):
   if len(par) == 2:
     return train_new, hold_new
   elif len(par) == 3:
-    return train_new, hold_new
+    return train_new, hold_new, test_new
