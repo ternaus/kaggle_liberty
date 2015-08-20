@@ -118,3 +118,26 @@ elif ind == 2:
   submission['Id'] = test['Id']
   submission['Hazard'] = prediction
   submission.to_csv("xgbt/xgbt_6.csv", index=False)
+
+elif ind == 3:
+  X_test.fillna(-1, inplace=True)
+  xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
+  xgval = xgb.DMatrix(X.values[:offset, :], label=y.values[:offset])
+  xgtest = xgb.DMatrix(X_test.values)
+  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+
+  params = {
+  'objective': 'reg:linear',
+  'eta': 0.005,
+  'min_child_weight': 3,
+  'subsample': 0.7,
+  'colsample_bytree': 0.5,
+  # 'scal_pos_weight': 1,
+  'silent': 1,
+  'max_depth': 7,
+  'gamma': 1
+  }
+  params_new = list(params.items())
+  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+  prediction = model.predict(xgtest, ntree_limit=model.best_iteration)
+  print 'score on the hold = ', normalized_gini(test['Hazard'], prediction)
