@@ -30,6 +30,7 @@ def to_labels(train, test):
 
   for feature in features_cat:
     le = LabelEncoder()
+
     le.fit(np.hstack([train_new[feature].values, test_new[feature].values]))
     train_new[feature] = le.fit_transform(train_new[feature])
     test_new[feature] = le.transform(test_new[feature])
