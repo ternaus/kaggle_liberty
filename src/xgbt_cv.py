@@ -39,7 +39,7 @@ params = {
 
 num_rounds = 10000
 random_state = 42
-offset = 5000
+offset = 3000
 
 ind = 1
 if ind == 1:
