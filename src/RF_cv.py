@@ -23,8 +23,8 @@ hold = pd.read_csv('../data/hold_new.csv')
 train, test = to_labels(train, hold)
 
 y = train['Hazard']
-X = train.drop(['Hazard', 'Id'], 1)
-X_test = test.drop(['Hazard', 'Id'], 1)
+X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_test = test.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 
 
 random_state = 42
@@ -79,3 +79,18 @@ elif ind == 3:
   clf.fit(X, y)
   prediction = clf.predict(X_test)
   print 'score on the hold = ', normalized_gini(test['Hazard'], prediction)
+
+elif ind == 2:
+  clf = RandomForestRegressor(n_estimators=100,
+                              min_samples_split=2,
+                              max_features=0.4,
+                              max_depth=7,
+                              min_samples_leaf=1,
+                              n_jobs=-1,
+                              random_state=random_state)
+  clf.fit(X, y)
+  prediction = clf.predict(X_test)
+  submission = pd.DataFrame()
+  submission['Id'] = test['Id']
+  submission['Hazard'] = prediction
+  submission.to_csv("preds_on_hold/RF.csv", index=False)
