@@ -1,6 +1,9 @@
 from __future__ import division
 __author__ = 'Vladimir Iglovikov'
 from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+import numpy as np
+
 '''
 This script will encode labels
 '''
@@ -24,8 +27,10 @@ def to_labels(train, test):
                   "T2_V5"]
   train_new = train
   test_new = test
+
   for feature in features_cat:
     le = LabelEncoder()
+    le.fit(np.hstack(train_new[feature].values, test_new[feature].values))
     train_new[feature] = le.fit_transform(train_new[feature])
     test_new[feature] = le.transform(test_new[feature])
   return train_new, test_new
