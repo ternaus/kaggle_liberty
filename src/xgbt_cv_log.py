@@ -85,7 +85,7 @@ if ind == 1:
                 preds = model.predict(xgtest, ntree_limit=model.best_iteration)
                 # preds = model.predict(xgval, ntree_limit=model.best_iteration)
 
-                tp = normalized_gini(map(lambda x: math.exp(y_test) - 1), map(lambda x: math.exp(preds) - 1))
+                tp = normalized_gini(map(lambda x: math.exp(x) - 1, y_test), map(lambda x: math.exp(x) - 1, preds))
 
                 # tp = normalized_gini(y_train[:offset], preds)
                 score += [tp]
