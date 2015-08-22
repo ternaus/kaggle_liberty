@@ -55,7 +55,7 @@ if ind == 1:
   result_truncated_down = []
 
   for min_child_weight in [3]:
-    for eta in [0.001]:
+    for eta in [0.01]:
       for colsample_bytree in [0.5]:
         for max_depth in [7]:
           for subsample in [0.7]:
@@ -88,8 +88,23 @@ if ind == 1:
 
                 model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
 
-                preds = model.predict(xgtest, ntree_limit=model.best_iteration)
+                preds1 = model.predict(xgtest, ntree_limit=model.best_iteration)
+
+                X_train = X_train[::-1, :]
+                labels = X_train[::-1]
+
+                xgtrain = xgb.DMatrix(X_train[offset:, :], label=y_train[offset:])
+                xgval = xgb.DMatrix(X_train[:offset, :], label=y_train[:offset])
+
+                watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+
+                model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+
+                preds2 = model.predict(xgtest, ntree_limit=model.best_iteration)
+
                 # preds = model.predict(xgval, ntree_limit=model.best_iteration)
+
+                preds = 0.5 * preds1 + 0.5 * preds2
 
                 tp = normalized_gini(y_test, preds)
                 tp_up = normalized_gini(y_test, map(lambda x: min(69, x), preds))
