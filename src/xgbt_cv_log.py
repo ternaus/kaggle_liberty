@@ -122,7 +122,8 @@ elif ind == 2:
   submission = pd.DataFrame()
   submission['Id'] = hold['Id']
   submission['Hazard'] = prediction_hold
-  submission.to_csv("preds_on_hold/xgbt.csv", index=False)
+  submission['Hazard'] = submission['Hazard'].apply(lambda x: math.exp(x) - 1, 1)
+  submission.to_csv("preds_on_hold/xgbt_log.csv", index=False)
 
   prediction_test = model.predict(xgtest, ntree_limit=model.best_iteration)
 
@@ -132,25 +133,3 @@ elif ind == 2:
   submission['Hazard'] = submission['Hazard'].apply(lambda x: math.exp(x) - 1, 1)
   submission.to_csv("preds_on_test/xgbt_log.csv", index=False)
 
-
-elif ind == 3:
-  xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
-  xgval = xgb.DMatrix(X.values[:offset, :], label=y.values[:offset])
-  xghold = xgb.DMatrix(X_hold.values)
-  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
-
-  params = {
-  'objective': 'reg:linear',
-  'eta': 0.005,
-  'min_child_weight': 3,
-  'subsample': 0.7,
-  'colsample_bytree': 0.5,
-  # 'scal_pos_weight': 1,
-  'silent': 1,
-  'max_depth': 7,
-  'gamma': 1
-  }
-  params_new = list(params.items())
-  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-  prediction = model.predict(xghold, ntree_limit=model.best_iteration)
-  print 'score on the hold = ', normalized_gini(hold['Hazard'], prediction)
