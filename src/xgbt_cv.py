@@ -53,6 +53,10 @@ if ind == 1:
   result = []
   result_truncated_up = []
   result_truncated_down = []
+  result_truncated_both = []
+  result_truncated_both_round = []
+  result_truncated_both_int = []
+
 
   for min_child_weight in [3]:
     for eta in [0.01]:
@@ -71,6 +75,9 @@ if ind == 1:
               score = []
               score_truncated_up = []
               score_truncated_down = []
+              score_truncated_both = []
+              score_truncated_both_round = []
+              score_truncated_both_int = []
 
               for train_index, test_index in rs:
 
@@ -109,23 +116,55 @@ if ind == 1:
                 tp = normalized_gini(y_test, preds)
                 tp_up = normalized_gini(y_test, map(lambda x: min(69, x), preds))
                 tp_down = normalized_gini(y_test, map(lambda x: max(1, x), preds))
+                tp_both = normalized_gini(y_test, map(lambda x: min(69, max(1, x)), preds))
+                tp_both_round = normalized_gini(y_test, map(lambda x: round(min(69, max(1, x))), preds))
+                tp_both_int = normalized_gini(y_test, map(lambda x: int(min(69, max(1, x))), preds))
+
                 # tp = normalized_gini(y_train[:offset], preds)
                 score += [tp]
                 score_truncated_up += [tp_up]
                 score_truncated_down += [tp_down]
+                score_truncated_both += [tp_both]
+                score_truncated_both_int += [tp_both_int]
+                score_truncated_both_round += [tp_both_round]
                 print tp
-
 
               result += [(np.mean(score), np.std(score), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result_truncated_both += [(np.mean(score_truncated_both), np.std(score_truncated_both), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result_truncated_both_int += [(np.mean(score_truncated_both_int), np.std(score_truncated_both_int), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result_truncated_both_round += [(np.mean(score_truncated_both_round), np.std(score_truncated_both_round), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
 
   result.sort()
   result_truncated_up.sort()
   result_truncated_down.sort()
+  result_truncated_both.sort()
+  result_truncated_both_int.sort()
+  result_truncated_both_round.sort()
+
+  print
+  print 'result'
   print result
+
+  print
+  print 'result_truncated_up'
   print result_truncated_up
+
+  print
+  print 'result_truncated_down'
   print result_truncated_down
+
+  print
+  print 'result truncated both'
+  print result_truncated_both
+
+  print
+  print 'result truncated both int'
+  print result_truncated_both_int
+  print
+  print 'result truncated both round'
+  print result_truncated_both_round
 
 elif ind == 2:
   xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
@@ -136,7 +175,8 @@ elif ind == 2:
   watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
   params = {
-  'objective': 'reg:linear',
+  # 'objective': 'reg:linear',
+    'objective': 'count:poisson',
   'eta': 0.005,
   'min_child_weight': 3,
   'subsample': 0.7,
