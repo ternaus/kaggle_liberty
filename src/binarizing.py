@@ -30,5 +30,7 @@ y_list = []
 for a in x_list:
   y_list += [normalized_gini(hold['Hazard'], map(lambda x: binar(x, a), preds['Hazard']))]
 
+print x_list
+print y_list
 plot(x_list, y_list)
 savefig('cuts.png')
