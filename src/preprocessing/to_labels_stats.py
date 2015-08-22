@@ -10,7 +10,7 @@ This script will add statistical features computed on train to hold and test for
 and drop them after this
 '''
 
-def to_labels(par):
+def to_labels_stats(par):
   features_cat = ["T1_V11",
                   "T1_V12",
                   "T1_V15",
