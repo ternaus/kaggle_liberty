@@ -132,7 +132,7 @@ if ind == 1:
 
               sc = math.ceil(10000 * np.mean(score)) / 10000
               sc_std = math.ceil(10000 * np.mean(score)) / 10000
-              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter, params['objective'])]
               # result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_both += [(np.mean(score_truncated_both), np.std(score_truncated_both), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
