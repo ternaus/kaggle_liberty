@@ -13,7 +13,7 @@ import numpy as np
 from pylab import *
 
 hold = pd.read_csv('../data/hold_new.csv')
-preds = pd.read_csv('../preds_on_hold/xgbt.csv')
+preds = pd.read_csv('preds_on_hold/xgbt.csv')
 
 def binar(x, a):
   if 53 < x < a:
