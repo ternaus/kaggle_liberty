@@ -51,6 +51,8 @@ if ind == 1:
   rs = ShuffleSplit(len(y), n_iter=n_iter, test_size=0.1, random_state=random_state)
 
   result = []
+  result_truncated_up = []
+  result_truncated_down = []
 
   for min_child_weight in [3]:
     for eta in [0.001]:
@@ -67,6 +69,9 @@ if ind == 1:
               
               params_new = list(params.items())
               score = []
+              score_truncated_up = []
+              score_truncated_down = []
+
               for train_index, test_index in rs:
 
                 X_train = X.values[train_index]
@@ -87,14 +92,25 @@ if ind == 1:
                 # preds = model.predict(xgval, ntree_limit=model.best_iteration)
 
                 tp = normalized_gini(y_test, preds)
+                tp_up = normalized_gini(y_test, map(lambda x: min(69, x), preds))
+                tp_down = normalized_gini(y_test, map(lambda x: max(1, x), preds))
                 # tp = normalized_gini(y_train[:offset], preds)
                 score += [tp]
+                score_truncated_up += [tp_up]
+                score_truncated_down += [tp_down]
                 print tp
 
+
               result += [(np.mean(score), np.std(score), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
 
   result.sort()
+  result_truncated_up.sort()
+  result_truncated_down.sort()
   print result
+  print result_truncated_up
+  print result_truncated_down
 
 elif ind == 2:
   xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
