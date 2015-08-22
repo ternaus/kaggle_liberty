@@ -3,6 +3,6 @@
 #$ -cwd
 #$ -V
 #$ -N job_name
-#$ -pe orte 10
-cd $SGE_O_WORKDIR
-orterun -n 10 python RF_cv.py
+#$ -pe orte 1
+#cd $SGE_O_WORKDIR
+python RF_cv.py

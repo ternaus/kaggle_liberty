@@ -30,7 +30,8 @@ X_test = test.drop(['Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 
 
 params = {
-  'objective': 'reg:linear',
+  # 'objective': 'reg:linear',
+  'objective': 'count:poisson',
   # 'eta': 0.005,
   # 'min_child_weight': 6,
   # 'subsample': 0.7,
