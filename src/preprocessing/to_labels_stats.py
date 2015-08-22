@@ -55,9 +55,9 @@ def to_labels_stats(par):
 
 
   #drop categorical variables
-  train_new.drop(features_cat, inplace=True)
-  test_new.drop(features_cat, inplace=True)
-  hold_new.drop(features_cat, inplace=True)
+  train_new.drop(features_cat, 1, inplace=True)
+  test_new.drop(features_cat, 1, inplace=True)
+  hold_new.drop(features_cat, 1, inplace=True)
 
   if len(par) == 2:
     return train_new, hold_new
