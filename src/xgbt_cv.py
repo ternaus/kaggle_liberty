@@ -204,8 +204,8 @@ elif ind == 2:
 
   model2 = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
 
-  prediction_hold_2 = model2.predict(xghold, ntree_limit=model1.best_iteration)
-  prediction_test_2 = model2.predict(xgtest, ntree_limit=model1.best_iteration)
+  prediction_hold_2 = model2.predict(xghold, ntree_limit=model2.best_iteration)
+  prediction_test_2 = model2.predict(xgtest, ntree_limit=model2.best_iteration)
 
   prediction_hold = 0.5 * prediction_hold_1 + 0.5 * prediction_hold_2
 
