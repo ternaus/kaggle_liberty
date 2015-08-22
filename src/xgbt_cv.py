@@ -91,10 +91,10 @@ if ind == 1:
                 preds1 = model.predict(xgtest, ntree_limit=model.best_iteration)
 
                 X_train = X_train[::-1, :]
-                labels = X_train[::-1]
+                labels = y_train[::-1]
 
-                xgtrain = xgb.DMatrix(X_train[offset:, :], label=y_train[offset:])
-                xgval = xgb.DMatrix(X_train[:offset, :], label=y_train[:offset])
+                xgtrain = xgb.DMatrix(X_train[offset:, :], label=labels[offset:])
+                xgval = xgb.DMatrix(X_train[:offset, :], label=labels[:offset])
 
                 watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
