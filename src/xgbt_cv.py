@@ -51,11 +51,11 @@ if ind == 1:
   rs = ShuffleSplit(len(y), n_iter=n_iter, test_size=0.1, random_state=random_state)
 
   result = []
-  result_truncated_up = []
-  result_truncated_down = []
+  # result_truncated_up = []
+  # result_truncated_down = []
   result_truncated_both = []
-  result_truncated_both_round = []
-  result_truncated_both_int = []
+  # result_truncated_both_round = []
+  # result_truncated_both_int = []
 
 
   for min_child_weight in [3]:
@@ -73,11 +73,11 @@ if ind == 1:
               
               params_new = list(params.items())
               score = []
-              score_truncated_up = []
-              score_truncated_down = []
+              # score_truncated_up = []
+              # score_truncated_down = []
               score_truncated_both = []
-              score_truncated_both_round = []
-              score_truncated_both_int = []
+              # score_truncated_both_round = []
+              # score_truncated_both_int = []
 
               for train_index, test_index in rs:
 
@@ -114,57 +114,57 @@ if ind == 1:
                 preds = 0.5 * preds1 + 0.5 * preds2
 
                 tp = normalized_gini(y_test, preds)
-                tp_up = normalized_gini(y_test, map(lambda x: min(69, x), preds))
-                tp_down = normalized_gini(y_test, map(lambda x: max(1, x), preds))
+                # tp_up = normalized_gini(y_test, map(lambda x: min(69, x), preds))
+                # tp_down = normalized_gini(y_test, map(lambda x: max(1, x), preds))
                 tp_both = normalized_gini(y_test, map(lambda x: min(69, max(1, x)), preds))
-                tp_both_round = normalized_gini(y_test, map(lambda x: round(min(69, max(1, x))), preds))
-                tp_both_int = normalized_gini(y_test, map(lambda x: int(min(69, max(1, x))), preds))
+                # tp_both_round = normalized_gini(y_test, map(lambda x: round(min(69, max(1, x))), preds))
+                # tp_both_int = normalized_gini(y_test, map(lambda x: int(min(69, max(1, x))), preds))
 
                 # tp = normalized_gini(y_train[:offset], preds)
                 score += [tp]
-                score_truncated_up += [tp_up]
-                score_truncated_down += [tp_down]
+                # score_truncated_up += [tp_up]
+                # score_truncated_down += [tp_down]
                 score_truncated_both += [tp_both]
-                score_truncated_both_int += [tp_both_int]
-                score_truncated_both_round += [tp_both_round]
+                # score_truncated_both_int += [tp_both_int]
+                # score_truncated_both_round += [tp_both_round]
                 print tp
 
               result += [(np.mean(score), np.std(score), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
-              result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
-              result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              # result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              # result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               result_truncated_both += [(np.mean(score_truncated_both), np.std(score_truncated_both), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
-              result_truncated_both_int += [(np.mean(score_truncated_both_int), np.std(score_truncated_both_int), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
-              result_truncated_both_round += [(np.mean(score_truncated_both_round), np.std(score_truncated_both_round), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              # result_truncated_both_int += [(np.mean(score_truncated_both_int), np.std(score_truncated_both_int), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              # result_truncated_both_round += [(np.mean(score_truncated_both_round), np.std(score_truncated_both_round), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
 
   result.sort()
-  result_truncated_up.sort()
-  result_truncated_down.sort()
+  # result_truncated_up.sort()
+  # result_truncated_down.sort()
   result_truncated_both.sort()
-  result_truncated_both_int.sort()
-  result_truncated_both_round.sort()
+  # result_truncated_both_int.sort()
+  # result_truncated_both_round.sort()
 
   print
   print 'result'
   print result
-
-  print
-  print 'result_truncated_up'
-  print result_truncated_up
-
-  print
-  print 'result_truncated_down'
-  print result_truncated_down
+  #
+  # print
+  # print 'result_truncated_up'
+  # print result_truncated_up
+  #
+  # print
+  # print 'result_truncated_down'
+  # print result_truncated_down
 
   print
   print 'result truncated both'
   print result_truncated_both
-
-  print
-  print 'result truncated both int'
-  print result_truncated_both_int
-  print
-  print 'result truncated both round'
-  print result_truncated_both_round
+  #
+  # print
+  # print 'result truncated both int'
+  # print result_truncated_both_int
+  # print
+  # print 'result truncated both round'
+  # print result_truncated_both_round
 
 elif ind == 2:
   xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
@@ -187,40 +187,33 @@ elif ind == 2:
   'gamma': 1
   }    
   params_new = list(params.items())
-  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-  prediction_hold = model.predict(xghold, ntree_limit=model.best_iteration)
-  
+  model1 = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+  prediction_hold_1 = model1.predict(xghold, ntree_limit=model1.best_iteration)
+  prediction_test_1 = model1.predict(xgtest, ntree_limit=model1.best_iteration)
+
+  X_train = X.values[::-1, :]
+  labels = y.values[::-1]
+
+  xgtrain = xgb.DMatrix(X_train[offset:, :], label=labels[offset:])
+  xgval = xgb.DMatrix(X_train[:offset, :], label=labels[:offset])
+
+  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+
+  model2 = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+
+  prediction_hold_2 = model2.predict(xghold, ntree_limit=model1.best_iteration)
+  prediction_test_2 = model2.predict(xgtest, ntree_limit=model1.best_iteration)
+
+  prediction_hold = 0.5 * prediction_hold_1 + 0.5 * prediction_hold_2
+
   submission = pd.DataFrame()
   submission['Id'] = hold['Id']
   submission['Hazard'] = prediction_hold
   submission.to_csv("preds_on_hold/xgbt.csv", index=False)
 
-  prediction_test = model.predict(xgtest, ntree_limit=model.best_iteration)
-
+  prediction_test = 0.5 * prediction_test_1 + 0.5 * prediction_test_2
   submission = pd.DataFrame()
   submission['Id'] = test['Id']
   submission['Hazard'] = prediction_test
   submission.to_csv("preds_on_test/xgbt.csv", index=False)
 
-
-elif ind == 3:
-  xgtrain = xgb.DMatrix(X.values[offset:, :], label=y.values[offset:])
-  xgval = xgb.DMatrix(X.values[:offset, :], label=y.values[:offset])
-  xghold = xgb.DMatrix(X_hold.values)
-  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
-
-  params = {
-  'objective': 'reg:linear',
-  'eta': 0.005,
-  'min_child_weight': 3,
-  'subsample': 0.7,
-  'colsample_bytree': 0.5,
-  # 'scal_pos_weight': 1,
-  'silent': 1,
-  'max_depth': 7,
-  'gamma': 1
-  }
-  params_new = list(params.items())
-  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
-  prediction = model.predict(xghold, ntree_limit=model.best_iteration)
-  print 'score on the hold = ', normalized_gini(hold['Hazard'], prediction)
