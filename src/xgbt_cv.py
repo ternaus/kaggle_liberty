@@ -10,6 +10,7 @@ from sklearn.cross_validation import ShuffleSplit
 import numpy as np
 from gini_normalized import normalized_gini
 from preprocessing.to_labels import to_labels
+import math
 
 train = pd.read_csv('../data/train_new.csv')
 hold = pd.read_csv('../data/hold_new.csv')
@@ -129,17 +130,19 @@ if ind == 1:
                 # score_truncated_both_round += [tp_both_round]
                 print tp
 
-              result += [(np.mean(score), np.std(score), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              sc = math.ceil(10000 * np.mean(score)) / 10000
+              sc_std = math.ceil(10000 * np.mean(score)) / 10000
+              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_up += [(np.mean(score_truncated_up), np.std(score_truncated_up), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_down += [(np.mean(score_truncated_down), np.std(score_truncated_down), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
-              result_truncated_both += [(np.mean(score_truncated_both), np.std(score_truncated_both), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
+              # result_truncated_both += [(np.mean(score_truncated_both), np.std(score_truncated_both), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_both_int += [(np.mean(score_truncated_both_int), np.std(score_truncated_both_int), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
               # result_truncated_both_round += [(np.mean(score_truncated_both_round), np.std(score_truncated_both_round), min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter)]
 
   result.sort()
   # result_truncated_up.sort()
   # result_truncated_down.sort()
-  result_truncated_both.sort()
+  # result_truncated_both.sort()
   # result_truncated_both_int.sort()
   # result_truncated_both_round.sort()
 
@@ -154,10 +157,10 @@ if ind == 1:
   # print
   # print 'result_truncated_down'
   # print result_truncated_down
-
-  print
-  print 'result truncated both'
-  print result_truncated_both
+  #
+  # print
+  # print 'result truncated both'
+  # print result_truncated_both
   #
   # print
   # print 'result truncated both int'
