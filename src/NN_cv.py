@@ -2,7 +2,6 @@
 from __future__ import division
 from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet
-from nolearn.lasagne.base import TrainSplit
 from sklearn.cross_validation import ShuffleSplit
 import theano
 import numpy as np
@@ -13,6 +12,7 @@ import math
 import pandas as pd
 __author__ = 'Vladimir Iglovikov'
 from gini_normalized import normalized_gini
+from preprocessing.to_onehot import to_labels
 
 def float32(k):
     return np.cast['float32'](k)
@@ -83,6 +83,19 @@ X_train = train.drop(['Hazard', 'Id'], 1)
 X_test = test.drop(['Hazard', 'Id'], 1)
 
 
+train = pd.read_csv('../data/train_new.csv')
+hold = pd.read_csv('../data/hold_new.csv')
+test = pd.read_csv('../data/test.csv')
+# hold = pd.read_csv('../data/hold_new.csv')
+
+train, hold = to_labels((train, hold))
+
+y = train['Hazard']
+X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_hold = hold.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+X_test = hold.drop(['Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
+
+
 net1 = NeuralNet(
       layers=[  # three layers: one hidden layer
           ('input', layers.InputLayer),
@@ -106,9 +119,8 @@ net1 = NeuralNet(
       # update_learning_rate=0.001,
       # update_momentum=0.9,
       update_momentum=theano.shared(float32(0.9)),
-      train_split=TrainSplit(eval_size=0.2),
 
-      # eval_size=0.2,
+      eval_size=0.2,
       max_epochs=100,  # we want to train this many epochs
       update_learning_rate=theano.shared(float32(0.03)),
       verbose=1,
@@ -126,7 +138,7 @@ print X_train.shape
 # print X_test.shape
 random_state = 42
 
-rs = ShuffleSplit(len(y_train), n_iter=1, test_size=0.5, random_state=random_state)
+rs = ShuffleSplit(len(y_train), n_iter=1, test_size=0.2, random_state=random_state)
 
 score = []
 
