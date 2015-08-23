@@ -77,7 +77,7 @@ def to_labels(par):
   hold_new['type'] = 'hold'
 
   joined_num = pd.concat([train_new, test_new, hold_new])
-  joined_cat = pd.concat(train_new_temp[features_cat], test_new_temp[features_cat], hold_new_temp[features_cat])
+  joined_cat = pd.concat([train_new_temp[features_cat], test_new_temp[features_cat], hold_new_temp[features_cat]])
 
   joined = pd.concat([joined_num, pd.get_dummies(joined_cat)], 1)
 
