@@ -88,7 +88,7 @@ hold = pd.read_csv('../data/hold_new.csv')
 test = pd.read_csv('../data/test.csv')
 # hold = pd.read_csv('../data/hold_new.csv')
 
-train, hold = to_labels((train, hold))
+train, hold, test = to_labels((train, hold, test))
 
 y = train['Hazard']
 X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
