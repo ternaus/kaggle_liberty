@@ -56,73 +56,85 @@ if ind == 1:
   rs = ShuffleSplit(len(y), n_iter=n_iter, test_size=test_size, random_state=random_state)
 
   result = []
+  for scale_pos_weight in [1]:
+    for min_child_weight in [3]:
+      for eta in [0.01]:
+        for colsample_bytree in [0.5]:
+          for max_depth in [7]:
+            for subsample in [0.7]:
+              for gamma in [1]:
+                params['min_child_weight'] = min_child_weight
+                params['eta'] = eta
+                params['colsample_bytree'] = colsample_bytree
+                params['max_depth'] = max_depth
+                params['subsample'] = subsample
+                params['gamma'] = gamma
+                params['scale_pos_weight'] = scale_pos_weight
 
-  for min_child_weight in [3]:
-    for eta in [0.01]:
-      for colsample_bytree in [0.5]:
-        for max_depth in [7]:
-          for subsample in [0.7]:
-            for gamma in [1]:
-              params['min_child_weight'] = min_child_weight
-              params['eta'] = eta
-              params['colsample_bytree'] = colsample_bytree
-              params['max_depth'] = max_depth
-              params['subsample'] = subsample
-              params['gamma'] = gamma
-              
-              params_new = list(params.items())
-              score = []
-              # score_truncated_up = []
-              # score_truncated_down = []
-              score_truncated_both = []
-              # score_truncated_both_round = []
-              # score_truncated_both_int = []
+                params_new = list(params.items())
+                score = []
+                # score_truncated_up = []
+                # score_truncated_down = []
+                score_truncated_both = []
+                # score_truncated_both_round = []
+                # score_truncated_both_int = []
 
-              for train_index, test_index in rs:
+                for train_index, test_index in rs:
 
-                X_train = X.values[train_index]
-                X_test = X.values[test_index]
-                y_train = y.values[train_index]
-                y_test = y.values[test_index]
+                  X_train = X.values[train_index]
+                  X_test = X.values[test_index]
+                  y_train = y.values[train_index]
+                  y_test = y.values[test_index]
 
-                xgtest = xgb.DMatrix(X_test)
+                  xgtest = xgb.DMatrix(X_test)
 
-                xgtrain = xgb.DMatrix(X_train[offset:, :], label=y_train[offset:])
-                xgval = xgb.DMatrix(X_train[:offset, :], label=y_train[:offset])
+                  xgtrain = xgb.DMatrix(X_train[offset:, :], label=y_train[offset:])
+                  xgval = xgb.DMatrix(X_train[:offset, :], label=y_train[:offset])
 
-                watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+                  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
-                model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+                  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
 
-                preds1 = model.predict(xgtest, ntree_limit=model.best_iteration)
+                  preds1 = model.predict(xgtest, ntree_limit=model.best_iteration)
 
-                X_train = X_train[::-1, :]
-                labels = y_train[::-1]
+                  X_train = X_train[::-1, :]
+                  labels = y_train[::-1]
 
-                xgtrain = xgb.DMatrix(X_train[offset:, :], label=labels[offset:])
-                xgval = xgb.DMatrix(X_train[:offset, :], label=labels[:offset])
+                  xgtrain = xgb.DMatrix(X_train[offset:, :], label=labels[offset:])
+                  xgval = xgb.DMatrix(X_train[:offset, :], label=labels[:offset])
 
-                watchlist = [(xgtrain, 'train'), (xgval, 'val')]
+                  watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
-                model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
+                  model = xgb.train(params_new, xgtrain, num_rounds, watchlist, early_stopping_rounds=120)
 
-                preds2 = model.predict(xgtest, ntree_limit=model.best_iteration)
+                  preds2 = model.predict(xgtest, ntree_limit=model.best_iteration)
 
-                preds = 0.5 * preds1 + 0.5 * preds2
+                  preds = 0.5 * preds1 + 0.5 * preds2
 
-                tp = normalized_gini(y_test, preds)
-                score += [tp]
-                print tp
+                  tp = normalized_gini(y_test, preds)
+                  score += [tp]
+                  print tp
 
-              sc = math.ceil(100000 * np.mean(score)) / 100000
-              sc_std = math.ceil(100000 * np.std(score)) / 100000
-              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter, params['objective'], test_size)]
+                sc = math.ceil(100000 * np.mean(score)) / 100000
+                sc_std = math.ceil(100000 * np.std(score)) / 100000
+                result += [(sc,
+                            sc_std,
+                            min_child_weight,
+                            eta,
+                            colsample_bytree,
+                            max_depth,
+                            subsample,
+                            gamma,
+                            n_iter,
+                            params['objective'],
+                            test_size,
+                            scale_pos_weight)]
 
-  result.sort()
+    result.sort()
 
-  print
-  print 'result'
-  print result
+    print
+    print 'result'
+    print result
 
 
 elif ind == 2:
