@@ -69,7 +69,7 @@ if ind == 1:
 
               clf2.fit(a_train, np.log(b_train))
 
-              preds2 = clf1.predict(a_test)
+              preds2 = clf2.predict(a_test)
 
               preds = 0.5 * preds1 + 0.5 * np.exp(preds2)
 

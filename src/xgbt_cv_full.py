@@ -12,6 +12,7 @@ import numpy as np
 from gini_normalized import normalized_gini
 from preprocessing.to_labels import to_labels
 import math
+from sklearn.cross_validation import ShuffleSplit
 
 print 'read joined'
 joined = pd.read_csv('../data/joined.csv')
