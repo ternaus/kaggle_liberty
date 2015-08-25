@@ -26,11 +26,11 @@ random_state = 42
 
 ind = 1
 
-n_iter = 10
+n_iter = 5
 test_size = 0.2
 
 if ind == 1:
-  rs = ShuffleSplit(len(y), n_iter=10, test_size=0.2, random_state=random_state)
+  rs = ShuffleSplit(len(y), n_iter=n_iter, test_size=0.2, random_state=random_state)
 
   result = []
 
