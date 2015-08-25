@@ -11,6 +11,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from preprocessing.to_labels import to_labels
 from gini_normalized import normalized_gini
+import math
 
 joined = pd.read_csv('../data/joined.csv')
 
@@ -34,7 +35,7 @@ if ind == 1:
 
   result = []
 
-  for n_estimators in [10]:
+  for n_estimators in [1000]:
     for min_samples_split in [2]:
       for max_features in [0.7]:
         for max_depth in [7]:
@@ -75,7 +76,9 @@ if ind == 1:
 
               score += [normalized_gini(b_test, preds)]
 
-            result += [(np.mean(score), np.std(score), n_estimators, min_samples_split, min_samples_leaf, max_depth, max_features, n_iter, test_size)]
+            x = (math.ceil(100000 * np.mean(score)) / 100000, math.ceil(100000 * np.std(score)) / 100000, n_estimators, min_samples_split, min_samples_leaf, max_depth, max_features, n_iter, test_size)
+
+            result += [x]
 
   result.sort()
   print result
