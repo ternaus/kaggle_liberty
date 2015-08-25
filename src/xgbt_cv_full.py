@@ -116,7 +116,7 @@ if ind == 1:
 
               sc = math.ceil(100000 * np.mean(score)) / 100000
               sc_std = math.ceil(100000 * np.std(score)) / 100000
-              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter, params['objective'])]
+              result += [(sc, sc_std, min_child_weight, eta, colsample_bytree, max_depth, subsample, gamma, n_iter, params['objective'], test_size)]
 
   result.sort()
 
