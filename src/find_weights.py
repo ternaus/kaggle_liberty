@@ -47,7 +47,7 @@ params = {
 }
 params_new = list(params.items())
 
-n_iter = 2
+n_iter = 10
 
 rs = ShuffleSplit(len(y), n_iter=n_iter, test_size=test_size, random_state=random_state)
 
@@ -173,7 +173,6 @@ for train_index, test_index in rs:
   alpha = 1
   prediction = preds_RF
   score_1 += [normalized_gini(y_test, prediction)]
-  score_1 += [score_1]
 
 
 print '0'
