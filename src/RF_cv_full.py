@@ -23,6 +23,7 @@ y = train['Hazard']
 X = train.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 X_test = test.drop(['Hazard', 'Id', 'T2_V10', 'T2_V7', 'T1_V13', 'T1_V10'], 1)
 
+
 random_state = 42
 
 ind = 1
@@ -76,7 +77,15 @@ if ind == 1:
 
               score += [normalized_gini(b_test, preds)]
 
-            x = (math.ceil(100000 * np.mean(score)) / 100000, math.ceil(100000 * np.std(score)) / 100000, n_estimators, min_samples_split, min_samples_leaf, max_depth, max_features, n_iter, test_size)
+            x = (math.ceil(100000 * np.mean(score)) / 100000,
+                 math.ceil(100000 * np.std(score)) / 100000,
+                 n_estimators,
+                 min_samples_split,
+                 min_samples_leaf,
+                 max_depth,
+                 max_features,
+                 n_iter,
+                 test_size)
 
             result += [x]
 
