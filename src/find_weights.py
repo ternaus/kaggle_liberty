@@ -176,27 +176,27 @@ for train_index, test_index in rs:
 
 
 print '0'
-print np.mean(score_00)
+print np.mean(score_00), np.std(score_00)
 print '0.1'
-print np.mean(score_01)
+print np.mean(score_01), np.std(score_01)
 print '0.2'
-print np.mean(score_02)
+print np.mean(score_02), np.std(score_02)
 print '0.3'
-print np.mean(score_03)
+print np.mean(score_03), np.std(score_03)
 print '0.4'
-print np.mean(score_04)
+print np.mean(score_04), np.std(score_04)
 print '0.5'
-print np.mean(score_05)
+print np.mean(score_05), np.std(score_05)
 print '0.6'
-print np.mean(score_06)
+print np.mean(score_06), np.std(score_06)
 print '0.7'
-print np.mean(score_07)
+print np.mean(score_07), np.std(score_07)
 print '0.8'
-print np.mean(score_08)
+print np.mean(score_08), np.std(score_08)
 print '0.9'
-print np.mean(score_09)
+print np.mean(score_09), np.std(score_09)
 print '1'
-print np.mean(score_1)
+print np.mean(score_1), np.std(score_1)
 
 
 
